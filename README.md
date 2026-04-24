@@ -8,16 +8,16 @@ Lumiglow is an ongoing e-commerce web application for a cosmetics brand, designe
 ### 🛍️ Products Page
 ![Products](Screenshot%20(129).png)
 
-### 🔐 Login Page
+### ❤️Whishlist Page
 ![Login](Screenshot%20(130).png)
 
 ### 🛒 Cart Page
 ![Cart](Screenshot%20(131).png)
 
-### 📦 Orders Page
+### Register Page
 ![Orders](Screenshot%20(132).png)
 
-### ⚙️ Admin Panel
+### ⚙️ Login Panel
 ![Admin](Screenshot%20(133).png)
 
 ### 📊 Dashboard
