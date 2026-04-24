@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LumiGlow | Luxe Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --blush: #fce8f3;
+            --petal: #f9d0e8;
+            --rose: #e8147a;
+            --deep-rose: #b50060;
+            --velvet: #7a0040;
+            --cream: #fffaf8;
+            --silk: #fff5fa;
+            --ink: #2a0015;
+            --muted: #a0607a;
+            --glow: rgba(232,20,122,0.15);
+            --card-shadow: 0 8px 40px rgba(180,0,80,0.10);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--cream);
+            color: var(--ink);
+            min-height: 100vh;
+            display: flex;
+            overflow-x: hidden;
+        }
+
+        /* ─── ANIMATED BACKGROUND ─── */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 80% 60% at 10% 0%, rgba(252,232,243,0.9) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 50% at 90% 100%, rgba(249,208,232,0.6) 0%, transparent 55%),
+                radial-gradient(ellipse 40% 40% at 50% 50%, rgba(255,245,250,0.8) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ─── SIDEBAR ─── */
+        .sidebar {
+            width: 270px;
+            min-height: 100vh;
+            position: fixed;
+            top: 0; left: 0; bottom: 0;
+            background: linear-gradient(175deg, #fff0f8 0%, #ffe4f2 60%, #ffd6ec 100%);
+            border-right: 1px solid rgba(232,20,122,0.10);
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+            box-shadow: 4px 0 40px rgba(180,0,80,0.06);
+        }
+
+        /* Decorative petal shapes */
+        .sidebar::before {
+            content: '';
+            position: absolute;
+            top: -80px; left: -80px;
+            width: 260px; height: 260px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(232,20,122,0.08), transparent 70%);
+            pointer-events: none;
+        }
+        .sidebar::after {
+            content: '';
+            position: absolute;
+            bottom: -60px; right: -60px;
+            width: 200px; height: 200px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(181,0,96,0.07), transparent 70%);
+            pointer-events: none;
+        }
+
+        /* ─── LOGO AREA ─── */
+        .logo-box {
+            padding: 44px 32px 28px;
+            position: relative;
+        }
+        .logo-eyebrow {
+            font-size: 9px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--muted);
+            font-weight: 500;
+            margin-bottom: 6px;
+        }
+        .logo-box h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 34px;
+            font-weight: 300;
+            color: var(--rose);
+            letter-spacing: 3px;
+            line-height: 1;
+        }
+        .logo-box h2 em {
+            font-style: italic;
+            font-weight: 600;
+        }
+        .logo-divider {
+            width: 40px;
+            height: 1.5px;
+            background: linear-gradient(90deg, var(--rose), transparent);
+            margin-top: 16px;
+        }
+
+        /* ─── NAV ─── */
+        .nav-section-label {
+            padding: 0 32px;
+            font-size: 9px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--muted);
+            font-weight: 500;
+            margin: 20px 0 10px;
+            opacity: 0.7;
+        }
+
+        nav {
+            padding: 0 18px;
+            flex: 1;
+        }
+
+        nav a {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 13px 18px;
+            text-decoration: none;
+            color: var(--velvet);
+            font-size: 12.5px;
+            font-weight: 500;
+            margin-bottom: 3px;
+            border-radius: 14px;
+            transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
+            letter-spacing: 0.3px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        nav a::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, rgba(232,20,122,0.10), rgba(232,20,122,0.04));
+            opacity: 0;
+            border-radius: inherit;
+            transition: opacity 0.25s;
+        }
+
+        nav a:hover::before { opacity: 1; }
+
+        nav a:hover {
+            color: var(--rose);
+            transform: translateX(4px);
+        }
+
+        nav a:hover .nav-icon {
+            transform: scale(1.15);
+        }
+
+        .nav-icon {
+            width: 32px; height: 32px;
+            background: white;
+            border-radius: 9px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 14px;
+            box-shadow: 0 2px 8px rgba(180,0,80,0.08);
+            transition: transform 0.25s;
+            flex-shrink: 0;
+        }
+
+        nav a:hover .nav-icon {
+            background: var(--rose);
+            box-shadow: 0 4px 14px rgba(232,20,122,0.3);
+        }
+
+        /* ─── SIGN OUT ─── */
+        .sidebar-footer {
+            padding: 24px 36px 32px;
+            border-top: 1px solid rgba(232,20,122,0.08);
+        }
+        .sidebar-footer a {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 11.5px;
+            font-weight: 500;
+            color: var(--muted);
+            text-decoration: none;
+            letter-spacing: 0.5px;
+            transition: color 0.2s;
+        }
+        .sidebar-footer a:hover { color: var(--rose); }
+
+        /* ─── MAIN CONTENT ─── */
+        .content {
+            margin-left: 270px;
+            padding: 48px 48px 48px 44px;
+            flex: 1;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ─── TOP HEADER ─── */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 48px;
+        }
+
+        .header-left .greeting {
+            font-size: 11px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--muted);
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .header-left h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 44px;
+            font-weight: 300;
+            line-height: 1.1;
+            letter-spacing: 1px;
+        }
+
+        .header-left h1 em {
+            font-style: italic;
+            color: var(--rose);
+            font-weight: 600;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding-top: 8px;
+        }
+
+        .live-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: white;
+            border: 1px solid rgba(232,20,122,0.15);
+            border-radius: 50px;
+            padding: 10px 20px;
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--velvet);
+            box-shadow: var(--card-shadow);
+        }
+
+        .live-dot {
+            width: 7px; height: 7px;
+            background: var(--rose);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(232,20,122,0.5); }
+            50% { box-shadow: 0 0 0 5px rgba(232,20,122,0); }
+        }
+
+        .date-badge {
+            background: white;
+            border: 1px solid rgba(232,20,122,0.10);
+            border-radius: 50px;
+            padding: 10px 20px;
+            font-size: 11px;
+            font-weight: 400;
+            color: var(--muted);
+            box-shadow: var(--card-shadow);
+        }
+
+        /* ─── STATS GRID ─── */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 22px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 24px;
+            padding: 32px 28px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(232,20,122,0.07);
+            box-shadow: var(--card-shadow);
+            transition: all 0.35s cubic-bezier(0.4,0,0.2,1);
+            cursor: pointer;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: -40px; right: -40px;
+            width: 130px; height: 130px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(249,208,232,0.5), transparent 70%);
+            transition: transform 0.4s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 24px 60px rgba(180,0,80,0.16);
+            border-color: rgba(232,20,122,0.20);
+        }
+
+        .stat-card:hover::before {
+            transform: scale(1.3);
+        }
+
+        .stat-icon-wrap {
+            width: 44px; height: 44px;
+            border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .icon-blush { background: var(--blush); }
+        .icon-petal { background: var(--petal); }
+        .icon-silk  { background: #f3e8ff; }
+        .icon-rose  { background: rgba(232,20,122,0.12); }
+
+        .stat-label {
+            font-size: 9.5px;
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            color: var(--muted);
+            font-weight: 500;
+            margin-bottom: 8px;
+            position: relative; z-index: 1;
+        }
+
+        .stat-number {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 48px;
+            font-weight: 300;
+            color: var(--ink);
+            line-height: 1;
+            margin-bottom: 20px;
+            position: relative; z-index: 1;
+            letter-spacing: -1px;
+        }
+
+        .stat-number.revenue { color: white; }
+
+        .stat-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--blush);
+            color: var(--rose);
+            border: none;
+            padding: 9px 18px;
+            border-radius: 10px;
+            font-size: 10.5px;
+            font-weight: 600;
+            cursor: pointer;
+            letter-spacing: 0.5px;
+            transition: all 0.25s;
+            position: relative; z-index: 1;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .stat-btn:hover {
+            background: var(--rose);
+            color: white;
+            box-shadow: 0 4px 16px rgba(232,20,122,0.35);
+        }
+
+        .stat-btn-white {
+            background: rgba(255,255,255,0.25);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.35);
+        }
+        .stat-btn-white:hover {
+            background: rgba(255,255,255,0.4);
+            box-shadow: none;
+        }
+
+        /* ─── REVENUE CARD ─── */
+        .revenue-card {
+            background: linear-gradient(135deg, #f0196a 0%, #c2005a 50%, #8a003e 100%);
+            border-color: transparent;
+            box-shadow: 0 16px 50px rgba(180,0,80,0.3);
+        }
+        .revenue-card .stat-label { color: rgba(255,255,255,0.65); }
+        .revenue-card .stat-number { color: white; }
+        .revenue-card::before {
+            background: radial-gradient(circle, rgba(255,255,255,0.12), transparent 70%);
+        }
+        .revenue-card::after {
+            content: '';
+            position: absolute;
+            bottom: -20px; left: -20px;
+            width: 100px; height: 100px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.06);
+        }
+
+        /* ─── BOTTOM ROW ─── */
+        .bottom-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 22px;
+        }
+
+        /* ─── ANALYTICS ─── */
+        .analytics-card {
+            background: white;
+            border-radius: 24px;
+            padding: 32px 36px;
+            border: 1px solid rgba(232,20,122,0.07);
+            box-shadow: var(--card-shadow);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+
+        .card-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 22px;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+        }
+
+        .card-title em { font-style: italic; color: var(--rose); }
+
+        .card-tag {
+            font-size: 9.5px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--rose);
+            background: var(--blush);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .bar-group {
+            margin-bottom: 24px;
+        }
+
+        .bar-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 10px;
+        }
+
+        .bar-name {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--velvet);
+            letter-spacing: 0.2px;
+        }
+
+        .bar-pct {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 20px;
+            font-weight: 300;
+            color: var(--rose);
+        }
+
+        .bar-track {
+            height: 5px;
+            background: var(--blush);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            height: 100%;
+            border-radius: 10px;
+            background: linear-gradient(90deg, var(--rose), var(--deep-rose));
+            animation: growBar 1.2s cubic-bezier(0.4,0,0.2,1) forwards;
+            transform-origin: left;
+        }
+
+        @keyframes growBar {
+            from { transform: scaleX(0); }
+            to   { transform: scaleX(1); }
+        }
+
+        /* ─── QUICK ACTIONS ─── */
+        .actions-card {
+            background: white;
+            border-radius: 24px;
+            padding: 32px 28px;
+            border: 1px solid rgba(232,20,122,0.07);
+            box-shadow: var(--card-shadow);
+        }
+
+        .quick-action-btn {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            width: 100%;
+            padding: 14px 16px;
+            border-radius: 14px;
+            border: none;
+            background: var(--silk);
+            cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 12.5px;
+            font-weight: 500;
+            color: var(--velvet);
+            letter-spacing: 0.2px;
+            transition: all 0.25s;
+            margin-bottom: 10px;
+            text-align: left;
+        }
+
+        .quick-action-btn:hover {
+            background: linear-gradient(90deg, #ffe0f2, #ffd0eb);
+            color: var(--rose);
+            transform: translateX(4px);
+            box-shadow: 0 4px 20px rgba(232,20,122,0.12);
+        }
+
+        .quick-action-btn:last-child { margin-bottom: 0; }
+
+        .qa-icon {
+            width: 36px; height: 36px;
+            background: white;
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 16px;
+            box-shadow: 0 2px 8px rgba(180,0,80,0.08);
+            flex-shrink: 0;
+        }
+
+        .qa-arrow {
+            margin-left: auto;
+            font-size: 16px;
+            opacity: 0.3;
+            transition: opacity 0.2s, transform 0.2s;
+        }
+        .quick-action-btn:hover .qa-arrow {
+            opacity: 1;
+            transform: translateX(3px);
+        }
+
+        /* ─── FADE IN ─── */
+        .stat-card, .analytics-card, .actions-card {
+            animation: fadeUp 0.5s ease both;
+        }
+        .stat-card:nth-child(1) { animation-delay: 0.05s; }
+        .stat-card:nth-child(2) { animation-delay: 0.10s; }
+        .stat-card:nth-child(3) { animation-delay: 0.15s; }
+        .stat-card:nth-child(4) { animation-delay: 0.20s; }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ─── RESPONSIVE ─── */
+        @media (max-width: 1280px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .bottom-row { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 900px) {
+            .sidebar { width: 70px; }
+            .sidebar .nav-text, .logo-box h2,
+            .logo-eyebrow, .logo-divider,
+            .nav-section-label, .sidebar-footer span { display: none; }
+            .content { margin-left: 70px; padding: 28px; }
+            nav a { justify-content: center; padding: 12px; }
+            .stats-grid { grid-template-columns: 1fr 1fr; }
+        }
+
+        @media (max-width: 600px) {
+            .stats-grid { grid-template-columns: 1fr; }
+            .header { flex-direction: column; gap: 16px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ═══════════════════════════════════ SIDEBAR ═══════════════════════════════════ -->
+    <aside class="sidebar">
+        <div class="logo-box">
+            <p class="logo-eyebrow">Luxe Admin Panel</p>
+            <h2><em>Lumi</em>Glow</h2>
+            <div class="logo-divider"></div>
+        </div>
+
+        <p class="nav-section-label">Catalog</p>
+        <nav>
+            <a href="#" onclick="goAdd()">
+                <span class="nav-icon icon-blush">✦</span>
+                <span class="nav-text">Add Product</span>
+            </a>
+            <a href="#" onclick="goView()">
+                <span class="nav-icon icon-petal">🌸</span>
+                <span class="nav-text">View Store</span>
+            </a>
+            <a href="#" onclick="goProductList()">
+                <span class="nav-icon icon-silk">📦</span>
+                <span class="nav-text">Product List</span>
+            </a>
+            <a href="#" onclick="goCategory()">
+                <span class="nav-icon icon-blush">🗂</span>
+                <span class="nav-text">Categories</span>
+            </a>
+        </nav>
+
+        <p class="nav-section-label">Commerce</p>
+        <nav>
+            <a href="#" onclick="goOrders()">
+                <span class="nav-icon icon-rose">🛒</span>
+                <span class="nav-text">Orders</span>
+            </a>
+            <a href="#" onclick="goCustomers()">
+                <span class="nav-icon icon-petal">👥</span>
+                <span class="nav-text">Customers</span>
+            </a>
+            <a href="#" onclick="goPayments()">
+                <span class="nav-icon icon-silk">💳</span>
+                <span class="nav-text">Payments</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="#" onclick="logout()">
+                <span style="font-size:14px;">⟵</span>
+                <span class="nav-text">Sign Out</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- ═══════════════════════════════════ CONTENT ═══════════════════════════════════ -->
+    <main class="content">
+
+        <!-- Header -->
+        <div class="header">
+            <div class="header-left">
+                <p class="greeting">Good day</p>
+                <h1>Welcome back, <em>Admin</em></h1>
+            </div>
+            <div class="header-right">
+                <div class="live-badge">
+                    <span class="live-dot"></span>
+                    Live Analytics
+                </div>
+                <div class="date-badge" id="currentDate"></div>
+            </div>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+
+            <div class="stat-card">
+                <div class="stat-icon-wrap icon-blush">📦</div>
+                <p class="stat-label">Inventory</p>
+                <div class="stat-number" id="productCount">—</div>
+                <button class="stat-btn" onclick="goProductList()">Stock Details →</button>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon-wrap icon-petal">🛒</div>
+                <p class="stat-label">Total Orders</p>
+                <div class="stat-number" id="orderCount">—</div>
+                <button class="stat-btn" onclick="goOrders()">Process →</button>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon-wrap icon-silk">👥</div>
+                <p class="stat-label">Customers</p>
+                <div class="stat-number" id="customerCount">—</div>
+                <button class="stat-btn" onclick="goCustomers()">View List →</button>
+            </div>
+
+            <div class="stat-card revenue-card">
+                <div class="stat-icon-wrap icon-rose">💎</div>
+                <p class="stat-label">Total Revenue</p>
+                <div class="stat-number revenue" id="revenue">—</div>
+                <button class="stat-btn stat-btn-white" onclick="goPayments()">History →</button>
+            </div>
+
+        </div>
+
+        <!-- Bottom Row -->
+        <div class="bottom-row">
+
+            <!-- Analytics -->
+            <div class="analytics-card">
+                <div class="card-header">
+                    <h3 class="card-title">Store <em>Performance</em></h3>
+                    <span class="card-tag">This Month</span>
+                </div>
+
+                <div class="bar-group">
+                    <div class="bar-meta">
+                        <span class="bar-name">Sales Target</span>
+                        <span class="bar-pct">78%</span>
+                    </div>
+                    <div class="bar-track">
+                        <div class="bar-fill" style="width:78%; animation-delay:0.2s;"></div>
+                    </div>
+                </div>
+
+                <div class="bar-group">
+                    <div class="bar-meta">
+                        <span class="bar-name">Order Fulfilment</span>
+                        <span class="bar-pct">65%</span>
+                    </div>
+                    <div class="bar-track">
+                        <div class="bar-fill" style="width:65%; animation-delay:0.4s;"></div>
+                    </div>
+                </div>
+
+                <div class="bar-group">
+                    <div class="bar-meta">
+                        <span class="bar-name">Customer Satisfaction</span>
+                        <span class="bar-pct">92%</span>
+                    </div>
+                    <div class="bar-track">
+                        <div class="bar-fill" style="width:92%; animation-delay:0.6s;"></div>
+                    </div>
+                </div>
+
+                <div class="bar-group" style="margin-bottom:0;">
+                    <div class="bar-meta">
+                        <span class="bar-name">Return Rate (low = good)</span>
+                        <span class="bar-pct">12%</span>
+                    </div>
+                    <div class="bar-track">
+                        <div class="bar-fill" style="width:12%; background: linear-gradient(90deg, #b8e05a, #85c11a); animation-delay:0.8s;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="actions-card">
+                <div class="card-header">
+                    <h3 class="card-title">Quick <em>Actions</em></h3>
+                </div>
+
+                <button class="quick-action-btn" onclick="goAdd()">
+                    <span class="qa-icon">✦</span>
+                    Add New Product
+                    <span class="qa-arrow">›</span>
+                </button>
+                <button class="quick-action-btn" onclick="goOrders()">
+                    <span class="qa-icon">🛒</span>
+                    Process Orders
+                    <span class="qa-arrow">›</span>
+                </button>
+                <button class="quick-action-btn" onclick="goCustomers()">
+                    <span class="qa-icon">👥</span>
+                    Manage Customers
+                    <span class="qa-arrow">›</span>
+                </button>
+                <button class="quick-action-btn" onclick="goCategory()">
+                    <span class="qa-icon">🗂</span>
+                    Edit Categories
+                    <span class="qa-arrow">›</span>
+                </button>
+                <button class="quick-action-btn" onclick="goPayments()">
+                    <span class="qa-icon">💳</span>
+                    Payment History
+                    <span class="qa-arrow">›</span>
+                </button>
+                <button class="quick-action-btn" onclick="goView()">
+                    <span class="qa-icon">🌸</span>
+                    View Live Store
+                    <span class="qa-arrow">›</span>
+                </button>
+            </div>
+
+        </div>
+    </main>
+
+<script>
+/* ── DATE ── */
+const d = new Date();
+document.getElementById('currentDate').textContent =
+    d.toLocaleDateString('en-IN', {
+        weekday:'short',
+        day:'numeric',
+        month:'long',
+        year:'numeric'
+    });
+
+/* ── LOAD DASHBOARD STATS ── */
+
+fetch("http://localhost:8080/admin/stats")
+.then(res => res.json())
+.then(data => {
+
+    console.log("Dashboard Data:", data);
+
+    document.getElementById("productCount").innerText =
+        data.inventory;
+
+    document.getElementById("orderCount").innerText =
+        data.orders;
+
+    document.getElementById("customerCount").innerText =
+        data.customers;
+
+    document.getElementById("revenue").innerText =
+        "₹" + data.revenue;
+
+})
+.catch(err => {
+    console.error("Connection Error:", err);
+
+    document.getElementById("productCount").innerText = "Err";
+});
+
+/* ── NAVIGATION — UNTOUCHED ── */ 
+  function goAdd() { window.location.href = "add-product.html"; } 
+  function goView() { window.location.href = "home1.html"; } 
+  function goProductList() { window.location.href = "product-list.html"; } 
+  function goCategory() { window.location.href = "category-management.html"; }
+  function goOrders() { window.location.href = "order.html"; } 
+  function goCustomers() { window.location.href = "admin-orders.html"; }
+  function goPayments() { window.location.href = "payment-management.html"; } 
+  function logout() { window.location.href = "admin.html"; }
+</script>
+
+</body>
+</html>

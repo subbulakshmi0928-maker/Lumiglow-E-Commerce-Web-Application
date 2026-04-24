@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Category Products | LumiGlow</title>
+<style>
+body {
+    font-family: Arial;
+    margin: 0;
+    background: #fff0f5;
+}
+
+.header {
+    background: #ff4d88;
+    color: white;
+    padding: 25px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.back-btn {
+    display: inline-block;
+    margin-top: 10px;
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+    border: 1px solid white;
+    padding: 5px 15px;
+    border-radius: 15px;
+}
+
+.products {
+    padding: 40px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 25px;
+}
+
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.card img {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.price {
+    color: #e91e63;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.no-products {
+    text-align: center;
+    grid-column: 1 / -1;
+    color: red;
+    font-size: 18px;
+    margin-top: 50px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <div id="title">Loading...</div>
+    <a href="home1.html" class="back-btn">← Back</a>
+</div>
+
+<div class="products" id="list"></div>
+
+<script>
+async function loadProducts() {
+    try {
+        const params = new URLSearchParams(window.location.search);
+        const selectedCategory = params.get("category");
+
+        if (!selectedCategory) {
+            document.getElementById("title").innerText = "No category selected";
+            document.getElementById("list").innerHTML =
+                '<p class="no-products">No category selected.</p>';
+            return;
+        }
+
+        // Set header title
+        document.getElementById("title").innerText =
+            selectedCategory.charAt(0).toUpperCase() +
+            selectedCategory.slice(1) + " Collection";
+
+        const res = await fetch(
+            `http://localhost:8080/products/category/${selectedCategory}`
+        );
+
+        if (!res.ok) {
+            throw new Error("Server responded with " + res.status);
+        }
+
+        const products = await res.json();
+
+        if (products.length === 0) {
+            document.getElementById("list").innerHTML =
+                '<p class="no-products">No products found in this category.</p>';
+            return;
+        }
+
+        let html = "";
+        products.forEach(p => {
+            html += `
+            <div class="card">
+                <img src="${p.image}" alt="${p.name}" onerror="this.src='placeholder.jpg'">
+                <h3>${p.name}</h3>
+                <p class="price">₹${p.price}</p>
+                <p>${p.net_weight || ''}</p>
+            </div>`;
+        });
+
+        document.getElementById("list").innerHTML = html;
+
+    } catch (err) {
+        console.error(err);
+        document.getElementById("list").innerHTML =
+            '<p class="no-products">Server error — check backend is running.</p>';
+    }
+}
+
+loadProducts();
+</script>
+
+</body>
+</html>

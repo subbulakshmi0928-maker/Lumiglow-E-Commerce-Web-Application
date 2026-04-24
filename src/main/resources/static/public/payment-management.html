@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LumiGlow | Payment Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root { --blush:#fce8f3;--petal:#f9d0e8;--rose:#e8147a;--deep-rose:#b50060;--velvet:#7a0040;--cream:#fffaf8;--silk:#fff5fa;--ink:#2a0015;--muted:#a0607a;--card-shadow:0 8px 40px rgba(180,0,80,0.10); }
+        * { margin:0;padding:0;box-sizing:border-box; }
+        body { font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);min-height:100vh;display:flex;overflow-x:hidden; }
+        body::before { content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 60% at 10% 0%,rgba(252,232,243,0.9) 0%,transparent 60%),radial-gradient(ellipse 60% 50% at 90% 100%,rgba(249,208,232,0.6) 0%,transparent 55%),radial-gradient(ellipse 40% 40% at 50% 50%,rgba(255,245,250,0.8) 0%,transparent 70%);pointer-events:none;z-index:0; }
+        .sidebar { width:270px;min-height:100vh;position:fixed;top:0;left:0;bottom:0;background:linear-gradient(175deg,#fff0f8 0%,#ffe4f2 60%,#ffd6ec 100%);border-right:1px solid rgba(232,20,122,0.10);display:flex;flex-direction:column;z-index:100;box-shadow:4px 0 40px rgba(180,0,80,0.06); }
+        .sidebar::before { content:'';position:absolute;top:-80px;left:-80px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(232,20,122,0.08),transparent 70%);pointer-events:none; }
+        .sidebar::after  { content:'';position:absolute;bottom:-60px;right:-60px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(181,0,96,0.07),transparent 70%);pointer-events:none; }
+        .logo-box { padding:44px 32px 28px;position:relative; }
+        .logo-eyebrow { font-size:9px;letter-spacing:4px;text-transform:uppercase;color:var(--muted);font-weight:500;margin-bottom:6px; }
+        .logo-box h2 { font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:300;color:var(--rose);letter-spacing:3px;line-height:1; }
+        .logo-box h2 em { font-style:italic;font-weight:600; }
+        .logo-divider { width:40px;height:1.5px;background:linear-gradient(90deg,var(--rose),transparent);margin-top:16px; }
+        .nav-section-label { padding:0 32px;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);font-weight:500;margin:20px 0 10px;opacity:0.7; }
+        nav { padding:0 18px;flex:1; }
+        nav a { display:flex;align-items:center;gap:14px;padding:13px 18px;text-decoration:none;color:var(--velvet);font-size:12.5px;font-weight:500;margin-bottom:3px;border-radius:14px;transition:all 0.25s cubic-bezier(0.4,0,0.2,1);letter-spacing:0.3px;position:relative;overflow:hidden;cursor:pointer; }
+        nav a::before { content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(232,20,122,0.10),rgba(232,20,122,0.04));opacity:0;border-radius:inherit;transition:opacity 0.25s; }
+        nav a:hover::before, nav a.active::before { opacity:1; }
+        nav a:hover, nav a.active { color:var(--rose);transform:translateX(4px); }
+        nav a.active { background:rgba(232,20,122,0.07); }
+        .nav-icon { width:32px;height:32px;background:white;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:14px;box-shadow:0 2px 8px rgba(180,0,80,0.08);transition:all 0.25s;flex-shrink:0; }
+        nav a:hover .nav-icon, nav a.active .nav-icon { background:var(--rose);box-shadow:0 4px 14px rgba(232,20,122,0.3); }
+        .sidebar-footer { padding:24px 36px 32px;border-top:1px solid rgba(232,20,122,0.08); }
+        .sidebar-footer a { display:flex;align-items:center;gap:8px;font-size:11.5px;font-weight:500;color:var(--muted);text-decoration:none;letter-spacing:0.5px;transition:color 0.2s;cursor:pointer; }
+        .sidebar-footer a:hover { color:var(--rose); }
+
+        /* ─── TOP ACTION BUTTONS ─── */
+        .top-action-bar { display:flex;justify-content:flex-end;gap:10px;margin-bottom:24px; }
+        .btn-dashboard { display:inline-flex;align-items:center;gap:8px;background:white;border:1.5px solid rgba(232,20,122,0.20);color:var(--velvet);padding:10px 20px;border-radius:50px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer;letter-spacing:0.4px;box-shadow:var(--card-shadow);transition:all 0.25s; }
+        .btn-dashboard:hover { background:var(--blush);border-color:var(--rose);color:var(--rose);transform:translateY(-1px); }
+        .btn-close { display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--rose),var(--deep-rose));color:white;border:none;padding:10px 20px;border-radius:50px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer;letter-spacing:0.4px;box-shadow:0 4px 16px rgba(232,20,122,0.30);transition:all 0.25s; }
+        .btn-close:hover { transform:translateY(-1px);box-shadow:0 6px 22px rgba(232,20,122,0.42); }
+
+        .content { margin-left:270px;padding:48px 48px 48px 44px;flex:1;position:relative;z-index:1; }
+        .header { display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:40px; }
+        .header-left .greeting { font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);font-weight:500;margin-bottom:8px; }
+        .header-left h1 { font-family:'Cormorant Garamond',serif;font-size:44px;font-weight:300;line-height:1.1;letter-spacing:1px; }
+        .header-left h1 em { font-style:italic;color:var(--rose);font-weight:600; }
+        .header-right { display:flex;align-items:center;gap:14px;padding-top:8px; }
+        .live-badge { display:flex;align-items:center;gap:8px;background:white;border:1px solid rgba(232,20,122,0.15);border-radius:50px;padding:10px 20px;font-size:11px;font-weight:500;color:var(--velvet);box-shadow:var(--card-shadow); }
+        .live-dot { width:7px;height:7px;background:var(--rose);border-radius:50%;animation:pulse 2s infinite; }
+        @keyframes pulse { 0%,100%{box-shadow:0 0 0 0 rgba(232,20,122,0.5);}50%{box-shadow:0 0 0 5px rgba(232,20,122,0);} }
+        .date-badge { background:white;border:1px solid rgba(232,20,122,0.10);border-radius:50px;padding:10px 20px;font-size:11px;color:var(--muted);box-shadow:var(--card-shadow); }
+        .toolbar { display:flex;align-items:center;gap:14px;margin-bottom:28px;flex-wrap:wrap; }
+        .search-wrap { position:relative;flex:1;min-width:200px; }
+        .search-wrap input { width:100%;padding:13px 18px 13px 44px;border:1.5px solid rgba(232,20,122,0.15);border-radius:14px;background:white;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink);outline:none;box-shadow:var(--card-shadow);transition:border-color 0.2s; }
+        .search-wrap input:focus { border-color:var(--rose); }
+        .search-wrap input::placeholder { color:var(--muted); }
+        .search-icon { position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:15px;opacity:0.4; }
+        .filter-select { padding:13px 18px;border:1.5px solid rgba(232,20,122,0.15);border-radius:14px;background:white;font-family:'DM Sans',sans-serif;font-size:12.5px;color:var(--velvet);outline:none;box-shadow:var(--card-shadow);cursor:pointer; }
+        .filter-select:focus { border-color:var(--rose); }
+        .table-card { background:white;border-radius:24px;border:1px solid rgba(232,20,122,0.07);box-shadow:var(--card-shadow);overflow:hidden;animation:fadeUp 0.5s ease both; }
+        .table-card-header { display:flex;justify-content:space-between;align-items:center;padding:28px 36px 24px;border-bottom:1px solid rgba(232,20,122,0.07); }
+        .card-title { font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;letter-spacing:0.5px; }
+        .card-title em { font-style:italic;color:var(--rose); }
+        .card-tag { font-size:9.5px;letter-spacing:2px;text-transform:uppercase;color:var(--rose);background:var(--blush);padding:5px 12px;border-radius:20px;font-weight:600; }
+        table { width:100%;border-collapse:collapse; }
+        thead tr { background:var(--silk); }
+        thead th { padding:14px 20px;font-size:9px;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted);text-align:left; }
+        tbody tr { border-bottom:1px solid rgba(232,20,122,0.05);transition:background 0.2s; }
+        tbody tr:last-child { border-bottom:none; }
+        tbody tr:hover { background:var(--silk); }
+        tbody td { padding:16px 20px;font-size:12.5px;color:var(--ink);vertical-align:middle; }
+        .payment-id { font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:600;color:var(--rose); }
+        .user-email { font-size:12px;color:var(--muted); }
+        .amount-val { font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600; }
+        .status-badge { display:inline-flex;align-items:center;gap:5px;padding:5px 13px;border-radius:20px;font-size:10px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase; }
+        .status-success { background:#e8f5e9;color:#2e7d32; }
+        .status-pending { background:#fff3cd;color:#a07800; }
+        .status-failed  { background:#fce4ec;color:#c62828; }
+        .status-paid    { background:#e8f5e9;color:#2e7d32; }
+        .status-unknown { background:var(--blush);color:var(--muted); }
+        .btn-view { padding:7px 18px;border-radius:10px;border:none;background:var(--blush);color:var(--rose);font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;cursor:pointer;transition:all 0.2s;letter-spacing:0.3px; }
+        .btn-view:hover { background:var(--rose);color:white;box-shadow:0 4px 14px rgba(232,20,122,0.3); }
+        .empty-state { text-align:center;padding:60px 20px;color:var(--muted); }
+        .empty-state .empty-icon { font-size:48px;margin-bottom:16px;opacity:0.4; }
+        .loading { text-align:center;padding:60px;color:var(--muted);font-size:13px;letter-spacing:1px; }
+        .spinner { width:32px;height:32px;border:3px solid var(--petal);border-top-color:var(--rose);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 16px; }
+        @keyframes spin { to { transform:rotate(360deg); } }
+        @keyframes fadeUp { from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);} }
+        @media(max-width:900px){.sidebar{width:70px;}.sidebar .nav-text,.logo-box h2,.logo-eyebrow,.logo-divider,.nav-section-label,.sidebar-footer span{display:none;}.content{margin-left:70px;padding:28px;}nav a{justify-content:center;padding:12px;}}
+        @media(max-width:700px){.header{flex-direction:column;gap:16px;}table thead{display:none;}tbody td{display:block;padding:8px 16px;}tbody td::before{content:attr(data-label);font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);display:block;margin-bottom:2px;}tbody tr{display:block;border:1px solid rgba(232,20,122,0.08);border-radius:16px;margin:12px 0;}}
+    </style>
+</head>
+<body>
+
+<aside class="sidebar">
+    <div class="logo-box">
+        <p class="logo-eyebrow">Luxe Admin Panel</p>
+        <h2><em>Lumi</em>Glow</h2>
+        <div class="logo-divider"></div>
+    </div>
+    <p class="nav-section-label">Catalog</p>
+    <nav>
+        <a href="add-product.html"><span class="nav-icon">✦</span><span class="nav-text">Add Product</span></a>
+        <a href="home1.html"><span class="nav-icon">🌸</span><span class="nav-text">View Store</span></a>
+        <a href="product-list.html"><span class="nav-icon">📦</span><span class="nav-text">Product List</span></a>
+        <a href="category-management.html"><span class="nav-icon">🗂</span><span class="nav-text">Categories</span></a>
+    </nav>
+    <p class="nav-section-label">Commerce</p>
+    <nav>
+        <a href="order.html"><span class="nav-icon">🛒</span><span class="nav-text">Orders</span></a>
+        <a href="admin-orders.html"><span class="nav-icon">👥</span><span class="nav-text">Customers</span></a>
+        <a href="payment-management.html" class="active"><span class="nav-icon">💳</span><span class="nav-text">Payments</span></a>
+    </nav>
+    <div class="sidebar-footer">
+        <a href="admin.html"><span style="font-size:14px;">⟵</span><span class="nav-text">Sign Out</span></a>
+    </div>
+</aside>
+
+<main class="content">
+
+    <!-- ── TOP ACTION BUTTONS ── -->
+    <div class="top-action-bar">
+        <button class="btn-dashboard" onclick="goDashboard()">🏠 &nbsp;Dashboard</button>
+        <button class="btn-close" onclick="closePage()">✕ &nbsp;Close</button>
+    </div>
+
+    <div class="header">
+        <div class="header-left">
+            <p class="greeting">Commerce</p>
+            <h1>Payment <em>Management</em></h1>
+        </div>
+        <div class="header-right">
+            <div class="live-badge"><span class="live-dot"></span>Live Payments</div>
+            <div class="date-badge" id="currentDate"></div>
+        </div>
+    </div>
+
+    <div class="toolbar">
+        <div class="search-wrap">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="searchInput" placeholder="Search by order ID or email…" oninput="filterPayments()">
+        </div>
+        <select class="filter-select" id="statusFilter" onchange="filterPayments()">
+            <option value="">All Statuses</option>
+            <option value="success">Success</option>
+            <option value="paid">Paid</option>
+            <option value="pending">Pending</option>
+            <option value="failed">Failed</option>
+        </select>
+    </div>
+
+    <div class="table-card">
+        <div class="table-card-header">
+            <h3 class="card-title">All <em>Payments</em></h3>
+            <span class="card-tag" id="paymentCountTag">Loading…</span>
+        </div>
+        <div id="tableContainer">
+            <div class="loading"><div class="spinner"></div>Fetching payments…</div>
+        </div>
+    </div>
+</main>
+
+<script>
+const d = new Date();
+document.getElementById('currentDate').textContent =
+    d.toLocaleDateString('en-IN', { weekday:'short', day:'numeric', month:'long', year:'numeric' });
+
+let allPayments = [];
+
+function getStatusClass(rawStatus) {
+    if (rawStatus.includes("success") || rawStatus.includes("paid")) return "status-success";
+    if (rawStatus.includes("fail"))   return "status-failed";
+    if (rawStatus.includes("pending")) return "status-pending";
+    return "status-unknown";
+}
+
+function getStatusEmoji(rawStatus) {
+    if (rawStatus.includes("success") || rawStatus.includes("paid")) return "✅";
+    if (rawStatus.includes("fail"))   return "✕";
+    if (rawStatus.includes("pending")) return "⏳";
+    return "•";
+}
+
+function renderTable(payments) {
+    const container = document.getElementById('tableContainer');
+    document.getElementById('paymentCountTag').textContent = payments.length + ' Records';
+    if (!payments.length) { container.innerHTML = `<div class="empty-state"><div class="empty-icon">💳</div><p>No payment records found.</p></div>`; return; }
+    let rows = '';
+    payments.forEach(p => {
+        const id = p.id ?? '-';
+        const orderId = p.orderId ?? '-';
+        const user = p.userEmail ?? 'Unknown';
+        const amount = p.amount != null ? '₹' + Number(p.amount).toLocaleString('en-IN') : '-';
+        const rawStatus = (p.paymentStatus || 'unknown').toLowerCase().trim();
+        const statusCls = getStatusClass(rawStatus);
+        rows += `
+        <tr>
+            <td data-label="ID"><span class="payment-id">#${id}</span></td>
+            <td data-label="Order ID">#${orderId}</td>
+            <td data-label="User"><span class="user-email">${user}</span></td>
+            <td data-label="Amount"><span class="amount-val">${amount}</span></td>
+            <td data-label="Status"><span class="status-badge ${statusCls}">${getStatusEmoji(rawStatus)} ${rawStatus}</span></td>
+            <td data-label="Action"><button class="btn-view" onclick="viewPayment(${id})">View</button></td>
+        </tr>`;
+    });
+    container.innerHTML = `<table><thead><tr><th>ID</th><th>Order ID</th><th>User</th><th>Amount</th><th>Status</th><th>Action</th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+
+function filterPayments() {
+    const q  = document.getElementById('searchInput').value.toLowerCase();
+    const sf = document.getElementById('statusFilter').value.toLowerCase();
+    const filtered = allPayments.filter(p => {
+        const rawStatus = (p.paymentStatus || '').toLowerCase();
+        const matchQ = !q  || String(p.id ?? '').includes(q) || (p.orderId ?? '').toString().includes(q) || (p.userEmail ?? '').toLowerCase().includes(q);
+        const matchS = !sf || rawStatus.includes(sf);
+        return matchQ && matchS;
+    });
+    renderTable(filtered);
+}
+
+async function loadPayments() {
+    try {
+        const res  = await fetch("http://localhost:8080/payments");
+        const data = await res.json();
+        if (!Array.isArray(data) || data.length === 0) { allPayments = []; renderTable([]); return; }
+        allPayments = data; renderTable(allPayments);
+    } catch (error) {
+        console.error("Error loading payments:", error);
+        document.getElementById('tableContainer').innerHTML = `<div class="empty-state"><div class="empty-icon">⚠️</div><p>Failed to load payments. Check server connection.</p></div>`;
+        document.getElementById('paymentCountTag').textContent = 'Error';
+    }
+}
+
+function viewPayment(id) { window.location.href = "/public/order.html?id=" + id; }
+
+/* ── NEW: Dashboard & Close ── */
+function goDashboard() { window.location.href = "dashboard.html"; }
+function closePage()   { window.close(); }
+
+loadPayments();
+</script>
+</body>
+</html>

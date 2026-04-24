@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Cart | LumiGlow ✨</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --pink: #e91e63;
+  --pink-dark: #c2185b;
+  --pink-light: #fce4ec;
+  --pink-mid: #f48fb1;
+  --green: #2e7d32;
+  --green-bg: #e8f5e9;
+  --text: #1a1a1a;
+  --text-2: #555;
+  --text-3: #999;
+  --border: #ede8ec;
+  --bg: #fdf8fb;
+  --card: #fff;
+  --shadow: 0 2px 24px rgba(233,30,99,0.08);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+/* ── TOPBAR ── */
+.topbar {
+  background: #fff;
+  border-bottom: 1px solid var(--border);
+  padding: 0 48px;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 68px; position: sticky; top: 0; z-index: 100;
+  box-shadow: 0 1px 12px rgba(233,30,99,0.06);
+}
+.logo { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 700; color: var(--pink); }
+.logo span { color: var(--pink-mid); }
+.steps { display: flex; align-items: center; gap: 0; }
+.step { display: flex; align-items: center; gap: 8px; padding: 6px 20px; font-size: 13px; color: var(--text-3); font-weight: 500; }
+.step.active { color: var(--pink); font-weight: 700; }
+.step.done { color: var(--green); }
+.step-num { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; background: #eee; color: #888; flex-shrink: 0; }
+.step.active .step-num { background: var(--pink); color: #fff; box-shadow: 0 0 0 4px var(--pink-light); }
+.step.done .step-num { background: var(--green); color: #fff; }
+.step-line { width: 36px; height: 2px; background: #eee; border-radius: 2px; }
+
+/* ── PAGE ── */
+.page { max-width: 1100px; margin: 0 auto; padding: 36px 20px; display: grid; grid-template-columns: 1fr 360px; gap: 28px; align-items: start; }
+
+/* ── SECTION HEADING ── */
+.sec-head { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 700; color: var(--text); margin-bottom: 18px; display: flex; align-items: center; justify-content: space-between; }
+.item-count { font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; color: var(--text-3); background: var(--pink-light); color: var(--pink); padding: 3px 12px; border-radius: 20px; }
+
+/* ── CART ITEM ── */
+.cart-item {
+  background: var(--card); border-radius: 18px; border: 1px solid var(--border);
+  padding: 22px 24px; margin-bottom: 16px;
+  box-shadow: var(--shadow); display: flex; gap: 18px; align-items: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.cart-item:hover { transform: translateY(-2px); box-shadow: 0 6px 28px rgba(233,30,99,0.12); }
+.item-emoji {
+  width: 72px; height: 72px; border-radius: 14px;
+  background: linear-gradient(135deg, #fce4ec, #f8bbd0);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 34px; flex-shrink: 0; border: 1.5px solid var(--pink-light);
+}
+.item-body { flex: 1; }
+.item-name { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+.item-unit { font-size: 12px; color: var(--text-3); margin-bottom: 12px; }
+.qty-row { display: flex; align-items: center; gap: 12px; }
+.qty-ctrl { display: inline-flex; align-items: center; background: #f9f0f5; border-radius: 10px; border: 1px solid var(--pink-light); overflow: hidden; }
+.qty-btn { width: 34px; height: 34px; border: none; background: transparent; cursor: pointer; font-size: 20px; color: var(--text-2); display: flex; align-items: center; justify-content: center; transition: 0.15s; line-height: 1; }
+.qty-btn:hover { background: var(--pink-light); color: var(--pink); }
+.qty-val { width: 36px; text-align: center; font-size: 14px; font-weight: 700; }
+.item-subtotal { font-size: 13px; color: var(--text-2); font-weight: 500; }
+.item-subtotal strong { color: var(--pink); }
+.item-right { display: flex; flex-direction: column; align-items: flex-end; gap: 12px; }
+.item-price { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 700; color: var(--pink); white-space: nowrap; }
+.remove-btn { background: #fff0f5; color: #e91e63; border: 1px solid var(--pink-light); border-radius: 8px; padding: 5px 12px; font-size: 12px; font-weight: 700; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: 0.15s; }
+.remove-btn:hover { background: var(--pink); color: #fff; }
+
+/* ── EMPTY ── */
+.empty-box { text-align: center; padding: 64px 20px; }
+.empty-icon { font-size: 64px; margin-bottom: 16px; }
+.empty-box h3 { font-family: 'Cormorant Garamond', serif; font-size: 24px; color: var(--text-2); margin-bottom: 8px; }
+.empty-box p { font-size: 14px; color: var(--text-3); margin-bottom: 24px; }
+.shop-btn { display: inline-block; padding: 12px 28px; background: var(--pink); color: #fff; border-radius: 12px; font-weight: 700; font-size: 14px; text-decoration: none; border: none; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+
+/* ── ORDER SUMMARY ── */
+.summary-card { background: var(--card); border-radius: 20px; border: 1px solid var(--border); padding: 26px; position: sticky; top: 88px; box-shadow: var(--shadow); }
+.sum-title { font-family: 'Cormorant Garamond', serif; font-size: 19px; font-weight: 700; margin-bottom: 18px; }
+.sum-items { border-bottom: 1px solid var(--border); padding-bottom: 14px; margin-bottom: 14px; display: flex; flex-direction: column; gap: 10px; }
+.sum-row { display: flex; justify-content: space-between; font-size: 13px; }
+.sum-row .lbl { color: var(--text-2); }
+.sum-row .val { font-weight: 600; color: var(--text); }
+.sum-row.discount .val { color: #e65100; }
+.pr-rows { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; }
+.pr { display: flex; justify-content: space-between; font-size: 13px; color: var(--text-2); align-items: center; }
+.tag-free { background: var(--green-bg); color: var(--green); font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px; margin-left: 6px; }
+.pr-total { display: flex; justify-content: space-between; font-size: 20px; font-weight: 700; color: var(--text); padding-top: 14px; border-top: 2px solid var(--border); margin-top: 4px; }
+.pr-total .tot { font-family: 'Cormorant Garamond', serif; font-size: 24px; color: var(--pink); }
+
+/* COUPON */
+.coupon-row { display: flex; gap: 8px; margin: 16px 0 6px; }
+.coupon-row input { flex: 1; padding: 10px 14px; border: 1.5px solid var(--border); border-radius: 10px; font-size: 13px; font-family: 'DM Sans', sans-serif; outline: none; transition: 0.2s; }
+.coupon-row input:focus { border-color: var(--pink); }
+.coupon-btn { padding: 10px 16px; background: var(--pink-light); color: var(--pink); border: none; border-radius: 10px; font-weight: 700; font-size: 13px; cursor: pointer; font-family: 'DM Sans', sans-serif; white-space: nowrap; transition: 0.15s; }
+.coupon-btn:hover { background: var(--pink); color: #fff; }
+.coupon-msg { font-size: 12px; padding: 7px 12px; border-radius: 8px; display: none; font-weight: 500; margin-bottom: 6px; }
+.coupon-msg.ok { background: var(--green-bg); color: var(--green); display: block; }
+.coupon-msg.fail { background: #ffebee; color: #c62828; display: block; }
+
+/* CHECKOUT BUTTON */
+.checkout-btn { width: 100%; padding: 17px; background: linear-gradient(135deg, #e91e63, #c2185b); color: #fff; border: none; border-radius: 14px; font-size: 16px; font-weight: 700; cursor: pointer; font-family: 'DM Sans', sans-serif; margin-top: 16px; letter-spacing: 0.3px; transition: 0.2s; box-shadow: 0 6px 20px rgba(233,30,99,0.3); }
+.checkout-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(233,30,99,0.38); }
+.checkout-btn:active { transform: scale(0.99); }
+.checkout-btn:disabled { background: #ddd; color: #aaa; cursor: not-allowed; transform: none; box-shadow: none; }
+.secure-note { display: flex; align-items: center; justify-content: center; gap: 5px; font-size: 11px; color: var(--text-3); margin-top: 12px; }
+
+/* savings */
+.savings-pill { background: var(--green-bg); color: var(--green); font-size: 12px; font-weight: 600; padding: 8px 12px; border-radius: 10px; text-align: center; margin-top: 10px; display: none; }
+
+@media(max-width:820px) {
+  .page { grid-template-columns: 1fr; }
+  .summary-card { position: static; order: -1; }
+  .topbar { padding: 0 16px; }
+  .steps .step-line, .steps .step span:not(.step-num) { display: none; }
+  .step { padding: 4px 8px; }
+  .cart-item { flex-wrap: wrap; }
+  .item-right { flex-direction: row; align-items: center; width: 100%; justify-content: space-between; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="logo">Lumi<span>Glow</span> ✨</div>
+  <div class="steps">
+    <div class="step active"><span class="step-num">1</span> <span>Cart</span></div>
+    <div class="step-line"></div>
+    <div class="step"><span class="step-num">2</span> <span>Checkout</span></div>
+    <div class="step-line"></div>
+    <div class="step"><span class="step-num">3</span> <span>Confirmed</span></div>
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- LEFT: CART ITEMS -->
+  <div>
+    <div class="sec-head">
+      Shopping Cart
+      <span class="item-count" id="itemCountBadge">0 items</span>
+    </div>
+    <div id="cartItems"></div>
+  </div>
+
+  <!-- RIGHT: SUMMARY -->
+  <div>
+    <div class="summary-card">
+      <div class="sum-title">Order Summary</div>
+
+      <div class="sum-items" id="sumList"></div>
+
+      <div class="coupon-row">
+        <input type="text" id="couponInput" placeholder="Coupon code (e.g. LUMI10)">
+        <button class="coupon-btn" onclick="applyCoupon()">Apply</button>
+      </div>
+      <div class="coupon-msg" id="couponMsg"></div>
+
+      <div class="pr-rows">
+        <div class="pr">
+          <span>Subtotal (<span id="qtyTotal">0</span> items)</span>
+          <span id="subtotalVal">₹0</span>
+        </div>
+        <div class="pr">
+          <span>Delivery <span class="tag-free">FREE</span></span>
+          <span style="color:var(--green);font-weight:700;">₹0</span>
+        </div>
+        <div class="pr" id="discRow" style="display:none;">
+          <span style="color:#e65100;">Discount (<span id="discLabel"></span>)</span>
+          <span style="color:#e65100;font-weight:700;" id="discVal"></span>
+        </div>
+      </div>
+
+      <div class="pr-total">
+        <span>Total Payable</span>
+        <span class="tot" id="totalVal">₹0</span>
+      </div>
+
+      <div class="savings-pill" id="savingsPill"></div>
+
+      <button class="checkout-btn" id="checkoutBtn" onclick="goToCheckout()">
+        Proceed to Checkout 🔒
+      </button>
+      <div class="secure-note">🔐 100% Secure & Encrypted</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const COUPONS = { LUMI10: 10, GLOW20: 20, FIRST15: 15, BEAUTY30: 30 };
+const EMOJIS  = { lip:"💄", cream:"🧴", perfume:"🌸", serum:"✨", foundation:"💅", glow:"🌟", moisturizer:"🧖", mask:"🧖", oil:"🫧", blush:"🌺", kajal:"👁️", eye:"👁️" };
+
+let cart = JSON.parse(localStorage.getItem("cart") || "[]");
+cart = cart.map(i => ({ id: i.id, name: i.name || "Product", price: parseFloat(i.price) || 0, qty: parseInt(i.qty) || 1 }));
+
+let discountPct = 0;
+let couponCode  = "";
+
+function getEmoji(name) {
+  const nl = (name || "").toLowerCase();
+  return Object.entries(EMOJIS).find(([k]) => nl.includes(k))?.[1] || "🛍️";
+}
+
+function fmt(n) { return "₹" + Math.max(0, n).toLocaleString("en-IN"); }
+
+function calcTotals() {
+  const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  const discAmt  = Math.round(subtotal * discountPct / 100);
+  const total    = subtotal - discAmt;
+  const totalQty = cart.reduce((s, i) => s + i.qty, 0);
+  return { subtotal, discAmt, total, totalQty };
+}
+
+function render() {
+  const { subtotal, discAmt, total, totalQty } = calcTotals();
+
+  /* ── item count badge ── */
+  const badge = document.getElementById("itemCountBadge");
+  badge.textContent = totalQty + (totalQty === 1 ? " item" : " items");
+
+  /* ── cart items ── */
+  const container = document.getElementById("cartItems");
+  if (cart.length === 0) {
+    container.innerHTML = `
+      <div class="empty-box">
+        <div class="empty-icon">🛒</div>
+        <h3>Your cart is empty</h3>
+        <p>Looks like you haven't added anything yet.</p>
+        <a class="shop-btn" href="home1.html">Continue Shopping ✨</a>
+      </div>`;
+    document.getElementById("checkoutBtn").disabled = true;
+  } else {
+    document.getElementById("checkoutBtn").disabled = false;
+    container.innerHTML = cart.map((item, idx) => `
+      <div class="cart-item">
+        <div class="item-emoji">${getEmoji(item.name)}</div>
+        <div class="item-body">
+          <div class="item-name">${item.name}</div>
+          <div class="item-unit">${fmt(item.price)} per unit</div>
+          <div class="qty-row">
+            <div class="qty-ctrl">
+              <button class="qty-btn" onclick="changeQty(${idx},-1)">−</button>
+              <span class="qty-val">${item.qty}</span>
+              <button class="qty-btn" onclick="changeQty(${idx},1)">+</button>
+            </div>
+            <span class="item-subtotal">= <strong>${fmt(item.price * item.qty)}</strong></span>
+          </div>
+        </div>
+        <div class="item-right">
+          <div class="item-price">${fmt(item.price * item.qty)}</div>
+          <button class="remove-btn" onclick="removeItem(${idx})">✕ Remove</button>
+        </div>
+      </div>`).join("");
+  }
+
+  /* ── summary list ── */
+  document.getElementById("sumList").innerHTML = cart.map(i =>
+    `<div class="sum-row">
+       <span class="lbl">${i.name} <span style="color:#bbb;font-size:11px;">×${i.qty}</span></span>
+       <span class="val">${fmt(i.price * i.qty)}</span>
+     </div>`).join("") || `<div style="font-size:13px;color:var(--text-3);">No items yet</div>`;
+
+  /* ── price rows ── */
+  document.getElementById("qtyTotal").textContent = totalQty;
+  document.getElementById("subtotalVal").textContent = fmt(subtotal);
+  document.getElementById("totalVal").textContent    = fmt(total);
+
+  if (discountPct > 0) {
+    document.getElementById("discRow").style.display    = "flex";
+    document.getElementById("discLabel").textContent    = couponCode + " −" + discountPct + "%";
+    document.getElementById("discVal").textContent      = "−" + fmt(discAmt);
+    const sp = document.getElementById("savingsPill");
+    sp.style.display = "block";
+    sp.textContent   = "🎉 You're saving " + fmt(discAmt) + " on this order!";
+  } else {
+    document.getElementById("discRow").style.display    = "none";
+    document.getElementById("savingsPill").style.display = "none";
+  }
+
+  save();
+}
+
+function save() {
+  localStorage.setItem("cart", JSON.stringify(cart));
+}
+
+function changeQty(idx, delta) {
+  cart[idx].qty = Math.max(1, cart[idx].qty + delta);
+  render();
+}
+
+function removeItem(idx) {
+  cart.splice(idx, 1);
+  render();
+}
+
+function applyCoupon() {
+  const code = document.getElementById("couponInput").value.trim().toUpperCase();
+  const msg  = document.getElementById("couponMsg");
+  if (!code) { msg.className = "coupon-msg fail"; msg.textContent = "Please enter a coupon code."; return; }
+  if (COUPONS[code]) {
+    discountPct = COUPONS[code]; couponCode = code;
+    msg.className = "coupon-msg ok";
+    msg.textContent = "🎉 \"" + code + "\" applied! " + discountPct + "% off";
+    render();
+  } else {
+    msg.className = "coupon-msg fail";
+    msg.textContent = "❌ Invalid code. Try: LUMI10, GLOW20, FIRST15, BEAUTY30";
+  }
+}
+
+/* ══════════════════════════════════════════
+   CHECKOUT → goes to user-order.html
+   Passes the full cart via localStorage so
+   user-order.html can read it.
+══════════════════════════════════════════ */
+function goToCheckout() {
+  if (cart.length === 0) { alert("Your cart is empty ❌"); return; }
+
+  // Save cart with discount info for user-order.html to read
+  const checkoutData = {
+    items:       cart,
+    couponCode:  couponCode  || null,
+    discountPct: discountPct || 0,
+    savedAt:     Date.now()
+  };
+  localStorage.setItem("cart",         JSON.stringify(cart));
+  localStorage.setItem("checkoutData", JSON.stringify(checkoutData));
+
+  // If cart has exactly 1 unique product, pass its id via query param too
+  // so user-order.html can also do ?id= style loading
+  if (cart.length === 1) {
+    window.location.href = "user-order.html?id=" + encodeURIComponent(cart[0].id);
+  } else {
+    window.location.href = "user-order.html";
+  }
+}
+
+render();
+</script>
+</body>
+</html>

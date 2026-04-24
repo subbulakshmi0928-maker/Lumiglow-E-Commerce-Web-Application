@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checkout | LumiGlow ✨</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --pink:#e91e63; --pink-dark:#c2185b; --pink-light:#fce4ec; --pink-mid:#f48fb1;
+  --green:#2e7d32; --green-bg:#e8f5e9; --red:#c62828; --red-bg:#ffebee;
+  --text:#1a1a1a; --text-2:#555; --text-3:#999;
+  --border:#ede8ec; --bg:#fdf8fb; --card:#fff;
+  --shadow:0 2px 24px rgba(233,30,99,0.07);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+/* TOPBAR */
+.topbar{background:#fff;border-bottom:1px solid var(--border);padding:0 48px;display:flex;align-items:center;justify-content:space-between;height:68px;position:sticky;top:0;z-index:200;box-shadow:0 1px 12px rgba(233,30,99,0.06);}
+.logo{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:700;color:var(--pink);}
+.logo span{color:var(--pink-mid);}
+.steps{display:flex;align-items:center;}
+.step{display:flex;align-items:center;gap:8px;padding:6px 18px;font-size:13px;color:var(--text-3);font-weight:500;}
+.step.active{color:var(--pink);font-weight:700;}
+.step.done{color:var(--green);}
+.step-num{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;background:#eee;color:#888;flex-shrink:0;}
+.step.active .step-num{background:var(--pink);color:#fff;box-shadow:0 0 0 4px var(--pink-light);}
+.step.done .step-num{background:var(--green);color:#fff;}
+.step-line{width:36px;height:2px;background:#eee;border-radius:2px;}
+
+/* PAGE */
+.page{max-width:1140px;margin:0 auto;padding:36px 20px;display:grid;grid-template-columns:1fr 400px;gap:28px;align-items:start;}
+
+/* CARD */
+.card{background:var(--card);border-radius:20px;border:1px solid var(--border);padding:28px;margin-bottom:20px;box-shadow:var(--shadow);}
+.card-title{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:700;color:var(--text);margin-bottom:20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.card-icon{width:34px;height:34px;border-radius:10px;background:var(--pink-light);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.ct-badge{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;background:var(--pink-light);color:var(--pink);padding:3px 12px;border-radius:20px;}
+
+/* CART ITEM */
+.ci{display:flex;gap:16px;align-items:center;padding:14px 0;border-bottom:1px dashed #f0e8ec;}
+.ci:last-child{border-bottom:none;}
+.ci-emoji{width:68px;height:68px;border-radius:14px;background:linear-gradient(135deg,#fce4ec,#f8bbd0);display:flex;align-items:center;justify-content:center;font-size:32px;flex-shrink:0;border:1.5px solid var(--pink-light);}
+.ci-info{flex:1;min-width:0;}
+.ci-name{font-size:15px;font-weight:700;color:var(--text);margin-bottom:3px;}
+.ci-unit{font-size:12px;color:var(--text-3);margin-bottom:10px;}
+.qty-ctrl{display:inline-flex;align-items:center;background:#f9f0f5;border-radius:10px;border:1px solid var(--pink-light);overflow:hidden;}
+.qty-btn{width:32px;height:32px;border:none;background:transparent;cursor:pointer;font-size:18px;color:var(--text-2);display:flex;align-items:center;justify-content:center;transition:0.15s;line-height:1;}
+.qty-btn:hover{background:var(--pink-light);color:var(--pink);}
+.qty-val{width:34px;text-align:center;font-size:14px;font-weight:700;}
+.ci-right{text-align:right;flex-shrink:0;}
+.ci-price{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:700;color:var(--pink);}
+.ci-each{font-family:'DM Sans',sans-serif;font-size:11px;color:var(--text-3);}
+
+/* FORM */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.field{display:flex;flex-direction:column;gap:6px;margin-top:14px;}
+.field label{font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:0.7px;}
+.field input,.field select,.field textarea{padding:13px 16px;border:1.5px solid var(--border);border-radius:12px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);outline:none;transition:0.2s;background:#fff;width:100%;}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--pink);box-shadow:0 0 0 4px rgba(233,30,99,0.08);}
+.field input.err{border-color:var(--red);animation:shake 0.3s;}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.field textarea{resize:none;height:76px;}
+.field select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M5 6L0 0h10z' fill='%23bbb'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center;}
+
+/* PAYMENT */
+.pay-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.pay-opt{border:1.5px solid var(--border);border-radius:14px;padding:14px 16px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:0.2s;user-select:none;}
+.pay-opt:hover{border-color:var(--pink-mid);background:#fff5f8;}
+.pay-opt.sel{border-color:var(--pink);background:linear-gradient(135deg,#fff0f5,#fff);}
+.pay-icon{font-size:24px;width:34px;text-align:center;flex-shrink:0;}
+.pay-label{font-size:13px;font-weight:700;color:var(--text);}
+.pay-sub{font-size:11px;color:var(--text-3);}
+.radio-dot{width:18px;height:18px;border-radius:50%;border:2px solid #ddd;margin-left:auto;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:0.2s;}
+.pay-opt.sel .radio-dot{border-color:var(--pink);background:var(--pink);}
+.pay-opt.sel .radio-dot::after{content:'';width:6px;height:6px;background:#fff;border-radius:50%;}
+.upi-field{margin-top:14px;display:none;flex-direction:column;gap:6px;}
+.upi-field.show{display:flex;}
+
+/* ORDER SUMMARY CARD */
+.order-card{background:var(--card);border-radius:20px;border:1px solid var(--border);padding:26px;position:sticky;top:88px;box-shadow:var(--shadow);}
+.order-title{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:700;margin-bottom:18px;}
+.oi{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px dashed #f0e8ec;font-size:13px;}
+.oi:last-child{border:none;}
+.oi-name{color:var(--text-2);font-weight:500;flex:1;padding-right:8px;}
+.oi-badge{background:var(--pink-light);color:var(--pink);font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;margin-left:4px;}
+.oi-price{font-weight:700;color:var(--text);white-space:nowrap;}
+
+/* COUPON */
+.coupon-row{display:flex;gap:8px;margin:18px 0 6px;}
+.coupon-row input{flex:1;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;font-family:'DM Sans',sans-serif;outline:none;transition:0.2s;}
+.coupon-row input:focus{border-color:var(--pink);}
+.coupon-btn{padding:10px 16px;background:var(--pink-light);color:var(--pink);border:none;border-radius:10px;font-weight:700;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;transition:0.15s;}
+.coupon-btn:hover{background:var(--pink);color:#fff;}
+.coupon-msg{font-size:12px;padding:7px 12px;border-radius:8px;display:none;font-weight:500;margin-bottom:6px;}
+.coupon-msg.ok{background:var(--green-bg);color:var(--green);display:block;}
+.coupon-msg.fail{background:var(--red-bg);color:var(--red);display:block;}
+
+/* PRICE ROWS */
+.price-rows{margin-top:16px;padding-top:16px;border-top:1px solid var(--border);}
+.pr{display:flex;justify-content:space-between;font-size:13px;color:var(--text-2);margin-bottom:10px;align-items:center;}
+.tag-free{background:var(--green-bg);color:var(--green);font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;margin-left:6px;}
+.pr-total{display:flex;justify-content:space-between;font-size:18px;font-weight:700;color:var(--text);padding-top:14px;border-top:2px solid var(--border);margin-top:8px;}
+.pr-total .pval{font-family:'Cormorant Garamond',serif;font-size:24px;color:var(--pink);}
+.savings-pill{background:var(--green-bg);color:var(--green);font-size:12px;font-weight:600;padding:8px 12px;border-radius:10px;text-align:center;margin-top:10px;display:none;}
+
+/* PLACE BTN */
+.place-btn{width:100%;padding:17px;background:linear-gradient(135deg,#e91e63,#c2185b);color:#fff;border:none;border-radius:14px;font-size:16px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:18px;letter-spacing:0.3px;transition:0.2s;box-shadow:0 6px 20px rgba(233,30,99,0.3);}
+.place-btn:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(233,30,99,0.38);}
+.place-btn:active{transform:scale(0.99);}
+.place-btn:disabled{background:#ddd;color:#aaa;cursor:not-allowed;transform:none;box-shadow:none;}
+.secure-note{display:flex;align-items:center;justify-content:center;gap:6px;font-size:11px;color:var(--text-3);margin-top:12px;}
+
+/* OVERLAY */
+.overlay{display:none;position:fixed;inset:0;background:rgba(253,248,251,0.95);z-index:9000;align-items:center;justify-content:center;flex-direction:column;gap:14px;}
+.overlay.show{display:flex;}
+.spinner{width:52px;height:52px;border:4px solid var(--pink-light);border-top-color:var(--pink);border-radius:50%;animation:spin 0.8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinner-text{font-size:14px;color:var(--pink);font-weight:600;}
+
+/* SUCCESS */
+.success{display:none;position:fixed;inset:0;background:#fff;z-index:9000;align-items:center;justify-content:center;flex-direction:column;gap:18px;padding:40px;text-align:center;}
+.success.show{display:flex;}
+.suc-icon{width:96px;height:96px;background:var(--green-bg);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:48px;animation:pop 0.5s cubic-bezier(.175,.885,.32,1.5);}
+@keyframes pop{0%{transform:scale(0)}100%{transform:scale(1)}}
+.success h2{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:700;}
+.success p{font-size:14px;color:var(--text-2);max-width:360px;line-height:1.9;}
+.order-badge{background:var(--pink-light);color:var(--pink);padding:8px 28px;border-radius:24px;font-weight:700;font-size:15px;}
+.suc-summary{background:#fdf8fb;border-radius:14px;padding:18px 22px;width:100%;max-width:460px;border:1px solid #f0e0ea;font-size:13px;text-align:left;}
+.suc-row{display:flex;justify-content:space-between;gap:12px;margin-bottom:8px;}
+.suc-row.total-row{border-top:1px dashed #f0e0ea;padding-top:8px;margin-top:4px;}
+.suc-lbl{color:var(--text-3);flex-shrink:0;}
+.suc-val{font-weight:600;color:var(--text);text-align:right;}
+.suc-actions{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;}
+.btn-inv{padding:13px 28px;background:var(--pink);color:#fff;border:none;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:0.2s;}
+.btn-inv:hover{background:var(--pink-dark);}
+.btn-home{padding:13px 28px;background:var(--pink-light);color:var(--pink);border:none;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:0.2s;}
+.btn-home:hover{background:var(--pink-mid);color:#fff;}
+
+/* INVOICE */
+.inv-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:9500;align-items:center;justify-content:center;padding:20px;}
+.inv-backdrop.show{display:flex;}
+.inv-box{background:#fff;border-radius:20px;max-width:660px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.2);}
+.inv-header{background:linear-gradient(135deg,#e91e63,#c2185b);color:#fff;padding:28px 36px;border-radius:20px 20px 0 0;}
+.inv-logo{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:700;}
+.inv-logo span{opacity:0.7;}
+.inv-body{padding:28px 36px;}
+.inv-2col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;}
+.inv-section-lbl{font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;}
+.inv-table{width:100%;border-collapse:collapse;margin:14px 0;}
+.inv-table th{font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:0.5px;padding:8px 0;border-bottom:2px solid var(--border);text-align:left;}
+.inv-table th:nth-child(2),.inv-table td:nth-child(2){text-align:center;}
+.inv-table th:last-child,.inv-table td:last-child{text-align:right;}
+.inv-table td{padding:11px 0;font-size:14px;border-bottom:1px dashed #f0e8ec;color:var(--text-2);}
+.inv-totals{max-width:260px;margin-left:auto;margin-top:14px;display:flex;flex-direction:column;gap:8px;}
+.inv-tr{display:flex;justify-content:space-between;font-size:13px;color:var(--text-2);}
+.inv-total-row{display:flex;justify-content:space-between;padding-top:12px;border-top:2px solid var(--border);font-size:15px;font-weight:700;color:var(--text);margin-top:4px;}
+.inv-total-row span:last-child{font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--pink);}
+.inv-pay-box{margin-top:18px;background:var(--pink-light);border-radius:12px;padding:14px 18px;}
+.inv-footer{background:#fdf8fb;border-top:1px solid var(--border);padding:18px 36px;border-radius:0 0 20px 20px;text-align:center;font-size:12px;color:var(--text-3);line-height:1.8;}
+.inv-actions{display:flex;gap:10px;justify-content:flex-end;padding:14px 36px;border-top:1px solid var(--border);}
+.btn-print{padding:10px 22px;background:var(--pink);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;}
+.btn-close{padding:10px 22px;background:#f0f0f0;color:#555;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;}
+
+/* RESPONSIVE */
+@media(max-width:820px){
+  .page{grid-template-columns:1fr;}
+  .order-card{position:static;}
+  .form-grid{grid-template-columns:1fr;}
+  .pay-grid{grid-template-columns:1fr;}
+  .topbar{padding:0 16px;}
+  .steps .step-line,.steps .step span:not(.step-num){display:none;}
+  .step{padding:4px 8px;}
+  .inv-2col{grid-template-columns:1fr;}
+}
+@media print{
+  body *{visibility:hidden!important;}
+  .inv-box,.inv-box *{visibility:visible!important;}
+  .inv-box{position:fixed!important;inset:0!important;max-height:none!important;border-radius:0!important;box-shadow:none!important;}
+  .inv-actions{display:none!important;}
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="logo">Lumi<span>Glow</span> ✨</div>
+  <div class="steps">
+    <div class="step done"><span class="step-num">✓</span><span>Cart</span></div>
+    <div class="step-line"></div>
+    <div class="step active"><span class="step-num">2</span><span>Checkout</span></div>
+    <div class="step-line"></div>
+    <div class="step" id="stepConf"><span class="step-num">3</span><span>Confirmed</span></div>
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- ── LEFT COLUMN ── -->
+  <div>
+
+    <!-- CART ITEMS (dynamically filled) -->
+    <div class="card">
+      <div class="card-title">
+        <div class="card-icon">🛍️</div> Your Items
+        <span class="ct-badge" id="ctBadge">Loading…</span>
+      </div>
+      <div id="cartItemsList"><p style="color:var(--text-3);font-size:14px;">Loading your cart…</p></div>
+    </div>
+
+    <!-- DELIVERY ADDRESS -->
+    <div class="card">
+      <div class="card-title"><div class="card-icon">📦</div> Delivery Address</div>
+      <div class="form-grid">
+        <div class="field"><label>First Name *</label><input type="text" id="fName" placeholder="Priya"></div>
+        <div class="field"><label>Last Name *</label><input type="text" id="lName" placeholder="Sharma"></div>
+      </div>
+      <div class="form-grid">
+        <div class="field"><label>Email Address *</label><input type="email" id="uEmail" placeholder="priya@email.com"></div>
+        <div class="field"><label>Phone Number *</label><input type="tel" id="uPhone" placeholder="+91 98765 43210" maxlength="13"></div>
+      </div>
+      <div class="field"><label>Street Address *</label><input type="text" id="uStreet" placeholder="House No., Street Name, Locality"></div>
+      <div class="form-grid">
+        <div class="field"><label>City *</label><input type="text" id="uCity" placeholder="Coimbatore"></div>
+        <div class="field"><label>State *</label>
+          <select id="uState">
+            <option value="">Select State</option>
+            <option>Tamil Nadu</option><option>Kerala</option><option>Karnataka</option>
+            <option>Andhra Pradesh</option><option>Telangana</option><option>Maharashtra</option>
+            <option>Delhi</option><option>Gujarat</option><option>Rajasthan</option>
+            <option>West Bengal</option><option>Punjab</option><option>Uttar Pradesh</option>
+            <option>Madhya Pradesh</option><option>Bihar</option><option>Other</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="field"><label>Pincode *</label><input type="text" id="uPin" placeholder="641001" maxlength="6"></div>
+        <div class="field"><label>Landmark (optional)</label><input type="text" id="uLandmark" placeholder="Near bus stop..."></div>
+      </div>
+      <div class="field"><label>Delivery Note (optional)</label><textarea id="uNote" placeholder="Any special instructions..."></textarea></div>
+    </div>
+
+    <!-- PAYMENT -->
+    <div class="card">
+      <div class="card-title"><div class="card-icon">💳</div> Payment Method</div>
+      <div class="pay-grid">
+        <div class="pay-opt sel" onclick="selectPay(this,'UPI')">
+          <div class="pay-icon">📱</div>
+          <div><div class="pay-label">UPI</div><div class="pay-sub">GPay / PhonePe / Paytm</div></div>
+          <div class="radio-dot"></div>
+        </div>
+        <div class="pay-opt" onclick="selectPay(this,'CARD')">
+          <div class="pay-icon">💳</div>
+          <div><div class="pay-label">Card</div><div class="pay-sub">Debit / Credit Card</div></div>
+          <div class="radio-dot"></div>
+        </div>
+        <div class="pay-opt" onclick="selectPay(this,'NETBANKING')">
+          <div class="pay-icon">🏦</div>
+          <div><div class="pay-label">Net Banking</div><div class="pay-sub">All major banks</div></div>
+          <div class="radio-dot"></div>
+        </div>
+        <div class="pay-opt" onclick="selectPay(this,'COD')">
+          <div class="pay-icon">💵</div>
+          <div><div class="pay-label">Cash on Delivery</div><div class="pay-sub">Pay at your door</div></div>
+          <div class="radio-dot"></div>
+        </div>
+      </div>
+      <div class="upi-field" id="upiField">
+        <label style="font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:0.7px;">UPI ID</label>
+        <input type="text" id="upiId" placeholder="yourname@upi" style="padding:13px 16px;border:1.5px solid var(--border);border-radius:12px;font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:0.2s;width:100%;">
+      </div>
+    </div>
+  </div>
+
+  <!-- ── RIGHT COLUMN: ORDER SUMMARY ── -->
+  <div>
+    <div class="order-card">
+      <div class="order-title">Order Summary</div>
+
+      <!-- item lines -->
+      <div id="summaryItems"></div>
+
+      <!-- coupon -->
+      <div class="coupon-row">
+        <input type="text" id="couponInput" placeholder="Coupon code (e.g. LUMI10)">
+        <button class="coupon-btn" onclick="applyCoupon()">Apply</button>
+      </div>
+      <div class="coupon-msg" id="couponMsg"></div>
+
+      <!-- price breakdown -->
+      <div class="price-rows">
+        <div class="pr">
+          <span>Subtotal (<span id="qtyLabel">0 items</span>)</span>
+          <span id="subtotalVal">₹0</span>
+        </div>
+        <div class="pr">
+          <span>Delivery <span class="tag-free">FREE</span></span>
+          <span style="color:var(--green);font-weight:700;">₹0</span>
+        </div>
+        <div class="pr">
+          <span>GST (18%)</span>
+          <span id="gstVal">₹0</span>
+        </div>
+        <div class="pr" id="discRow" style="display:none;">
+          <span style="color:#e65100;">Coupon <span id="discTag" style="font-size:10px;font-weight:700;background:#fff3e0;color:#e65100;padding:2px 8px;border-radius:20px;margin-left:4px;"></span></span>
+          <span style="color:#e65100;font-weight:700;" id="discVal"></span>
+        </div>
+        <div class="pr-total">
+          <span>Total Payable</span>
+          <span class="pval" id="totalVal">₹0</span>
+        </div>
+      </div>
+
+      <div class="savings-pill" id="savingsPill"></div>
+
+      <button class="place-btn" id="placeBtn" onclick="placeOrder()">🔒 Place Order</button>
+      <div class="secure-note">🔐 100% Secure &amp; Encrypted Checkout</div>
+    </div>
+  </div>
+</div>
+
+<!-- LOADING OVERLAY -->
+<div class="overlay" id="loadingOverlay">
+  <div class="spinner"></div>
+  <div class="spinner-text">Processing your order…</div>
+</div>
+
+<!-- SUCCESS SCREEN -->
+<div class="success" id="successScreen">
+  <div class="suc-icon">✅</div>
+  <h2>Order Confirmed!</h2>
+  <p>Thank you for shopping with <strong>LumiGlow</strong>! Your order will be delivered in <strong>3–5 business days</strong>.</p>
+  <div class="order-badge" id="orderBadge">Order #LG000000</div>
+  <div class="suc-summary" id="sucSummary"></div>
+  <div class="suc-actions">
+    <button class="btn-inv" onclick="showInvoice()">📄 View Invoice</button>
+    <button class="btn-home" onclick="window.location.href='home1.html'">Continue Shopping ✨</button>
+  </div>
+</div>
+
+<!-- INVOICE MODAL -->
+<div class="inv-backdrop" id="invoiceModal">
+  <div class="inv-box">
+    <div class="inv-header">
+      <div class="inv-logo">Lumi<span>Glow</span> ✨</div>
+      <div style="font-size:12px;opacity:0.85;margin-top:4px;">Tax Invoice · <span id="invDate"></span></div>
+    </div>
+    <div class="inv-body">
+      <div class="inv-2col">
+        <div>
+          <div class="inv-section-lbl">Bill To</div>
+          <div style="font-size:14px;font-weight:700;" id="invCust"></div>
+          <div style="font-size:13px;color:var(--text-2);line-height:1.7;margin-top:4px;" id="invAddr"></div>
+        </div>
+        <div style="text-align:right;">
+          <div class="inv-section-lbl">Invoice Details</div>
+          <div style="font-size:13px;color:var(--text-2);line-height:1.9;" id="invDetails"></div>
+        </div>
+      </div>
+      <hr style="border:none;border-top:1px solid var(--border);margin:18px 0;">
+      <table class="inv-table">
+        <thead><tr><th>Item</th><th>Qty</th><th>Unit Price</th><th>Amount</th></tr></thead>
+        <tbody id="invItems"></tbody>
+      </table>
+      <div class="inv-totals">
+        <div class="inv-tr"><span>Subtotal</span><span id="inv_sub"></span></div>
+        <div class="inv-tr"><span>GST (18%)</span><span id="inv_gst"></span></div>
+        <div class="inv-tr" id="inv_disc_row" style="display:none;"><span>Discount</span><span id="inv_disc" style="color:#e65100;"></span></div>
+        <div class="inv-tr"><span>Delivery</span><span style="color:var(--green);font-weight:700;">FREE</span></div>
+        <div class="inv-total-row"><span>Total Payable</span><span id="inv_total"></span></div>
+      </div>
+      <div class="inv-pay-box">
+        <div class="inv-section-lbl">Payment Method</div>
+        <div style="font-size:14px;font-weight:700;margin-top:4px;" id="inv_pay"></div>
+      </div>
+    </div>
+    <div class="inv-footer">
+      Thank you for shopping with LumiGlow! ✨<br>
+      support@lumiglow.in · www.lumiglow.in<br>
+      <span style="font-size:10px;color:#ccc;">Computer-generated invoice. No signature required.</span>
+    </div>
+    <div class="inv-actions">
+      <button class="btn-close" onclick="closeInvoice()">Close</button>
+      <button class="btn-print" onclick="window.print()">🖨️ Print / Save PDF</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     JAVASCRIPT
+════════════════════════════════════════════ -->
+<script>
+const COUPONS  = { LUMI10:10, GLOW20:20, FIRST15:15, BEAUTY30:30 };
+const EMOJIS   = { lip:"💄", cream:"🧴", perfume:"🌸", serum:"✨", foundation:"💅", glow:"🌟", moisturizer:"🧖", mask:"🧖", oil:"🫧", blush:"🌺", kajal:"👁️", eye:"👁️" };
+const GST_RATE = 0.18;
+
+/* ── STATE ── */
+let cart        = [];
+let discountPct = 0;
+let couponCode  = "";
+let payMethod   = "UPI";
+let orderPlaced = {};
+
+/* ── HELPERS ── */
+function fmt(n){ return "₹" + Math.max(0, Math.round(n)).toLocaleString("en-IN"); }
+function getEmoji(name){ const nl=(name||"").toLowerCase(); return Object.entries(EMOJIS).find(([k])=>nl.includes(k))?.[1]||"🛍️"; }
+
+function calcPrices(){
+  const subtotal = cart.reduce((s,i) => s + i.price * i.qty, 0);
+  const gst      = Math.round(subtotal * GST_RATE);
+  const discAmt  = Math.round((subtotal + gst) * discountPct / 100);
+  const total    = subtotal + gst - discAmt;
+  const totalQty = cart.reduce((s,i) => s + i.qty, 0);
+  return { subtotal, gst, discAmt, total, totalQty };
+}
+
+/* ── LOAD CART from localStorage + API fallback ── */
+async function loadCart(){
+  const pid = new URLSearchParams(window.location.search).get("id");
+
+  // 1. Read cart from localStorage (written by cart.html)
+  let items = JSON.parse(localStorage.getItem("cart") || "[]");
+  items = items.map(i => ({
+    id:    i.id,
+    name:  i.name  || ("Product #" + i.id),
+    price: parseFloat(i.price) || 0,
+    qty:   parseInt(i.qty)    || 1
+  }));
+
+  // 2. If ?id= present and not in cart, add it
+  if (pid && !items.find(i => String(i.id) === String(pid))) {
+    items.push({ id: pid, name: "Product #" + pid, price: 0, qty: 1 });
+  }
+
+  // 3. Fetch price from API for any item missing it
+  const NAME_FIELDS  = ["name","productName","itemName","title","pName","productTitle"];
+  const PRICE_FIELDS = ["price","productPrice","cost","amount","mrp","salePrice","sellingPrice","rate","sp","selling_price","unitPrice","actualPrice","basePrice","listPrice","discountedPrice"];
+
+  for (const item of items) {
+    if (item.price > 0) continue;
+    for (const base of ["http://localhost:8080/product/","http://localhost:8080/api/product/","http://localhost:8080/products/","http://localhost:8080/api/products/"]) {
+      try {
+        const res = await fetch(base + item.id);
+        if (!res.ok) continue;
+        const d = await res.json();
+        console.log("📦 API:", d);
+        for (const f of NAME_FIELDS)  { if (d[f]) { item.name = String(d[f]); break; } }
+        for (const f of PRICE_FIELDS) { const v = parseFloat(d[f]); if (v > 0) { item.price = v; break; } }
+        if (!item.price) {
+          for (const k of Object.keys(d)) { const v = parseFloat(d[k]); if (v > 0 && v < 1e6) { item.price = v; break; } }
+        }
+        break;
+      } catch {}
+    }
+  }
+
+  // 4. Apply coupon from cart.html if set
+  try {
+    const cd = JSON.parse(localStorage.getItem("checkoutData") || "{}");
+    if (cd.couponCode && COUPONS[cd.couponCode]) {
+      couponCode  = cd.couponCode;
+      discountPct = cd.discountPct || COUPONS[cd.couponCode];
+      document.getElementById("couponInput").value = couponCode;
+      showMsg("ok", "🎉 \"" + couponCode + "\" applied from cart! −" + discountPct + "%");
+    }
+  } catch {}
+
+  cart = items;
+  renderAll();
+}
+
+/* ── RENDER ITEMS (left) ── */
+function renderCartItems(){
+  const totalQty = cart.reduce((s,i) => s + i.qty, 0);
+  document.getElementById("ctBadge").textContent = cart.length + (cart.length===1 ? " item" : " items");
+
+  if (cart.length === 0) {
+    document.getElementById("cartItemsList").innerHTML =
+      `<div style="text-align:center;padding:30px;color:var(--text-3);">
+         <div style="font-size:40px;margin-bottom:12px;">🛒</div>
+         <p>Cart is empty. <a href="cart.html" style="color:var(--pink);font-weight:600;">Go back</a></p>
+       </div>`;
+    document.getElementById("placeBtn").disabled = true;
+    return;
+  }
+
+  document.getElementById("placeBtn").disabled = false;
+  document.getElementById("cartItemsList").innerHTML = cart.map((item, idx) => `
+    <div class="ci">
+      <div class="ci-emoji">${getEmoji(item.name)}</div>
+      <div class="ci-info">
+        <div class="ci-name">${item.name}</div>
+        <div class="ci-unit">${fmt(item.price)} per unit</div>
+        <div class="qty-ctrl">
+          <button class="qty-btn" onclick="changeQty(${idx},-1)">−</button>
+          <span class="qty-val">${item.qty}</span>
+          <button class="qty-btn" onclick="changeQty(${idx},+1)">+</button>
+        </div>
+      </div>
+      <div class="ci-right">
+        <div class="ci-price">${fmt(item.price * item.qty)}</div>
+        <div class="ci-each">${item.qty > 1 ? item.qty + " × " + fmt(item.price) : "&nbsp;"}</div>
+      </div>
+    </div>`).join("");
+}
+
+/* ── RENDER SUMMARY (right) ── */
+function renderSummary(){
+  const { subtotal, gst, discAmt, total, totalQty } = calcPrices();
+
+  document.getElementById("summaryItems").innerHTML = cart.map(i =>
+    `<div class="oi">
+       <span class="oi-name">${i.name}<span class="oi-badge">×${i.qty}</span></span>
+       <span class="oi-price">${fmt(i.price * i.qty)}</span>
+     </div>`).join("") || `<p style="font-size:13px;color:var(--text-3);padding:8px 0;">No items</p>`;
+
+  document.getElementById("qtyLabel").textContent    = totalQty + (totalQty===1 ? " item" : " items");
+  document.getElementById("subtotalVal").textContent  = fmt(subtotal);
+  document.getElementById("gstVal").textContent       = fmt(gst);
+  document.getElementById("totalVal").textContent     = fmt(total);
+
+  if (discountPct > 0) {
+    document.getElementById("discRow").style.display  = "flex";
+    document.getElementById("discTag").textContent    = couponCode + " −" + discountPct + "%";
+    document.getElementById("discVal").textContent    = "−" + fmt(discAmt);
+    const sp = document.getElementById("savingsPill");
+    sp.style.display = "block";
+    sp.textContent   = "🎉 You're saving " + fmt(discAmt) + " on this order!";
+  } else {
+    document.getElementById("discRow").style.display       = "none";
+    document.getElementById("savingsPill").style.display   = "none";
+  }
+}
+
+function renderAll(){ renderCartItems(); renderSummary(); }
+
+/* ── QTY ── */
+function changeQty(idx, delta){
+  cart[idx].qty = Math.max(1, cart[idx].qty + delta);
+  localStorage.setItem("cart", JSON.stringify(cart));
+  renderAll();
+}
+
+/* ── PAYMENT ── */
+function selectPay(el, method){
+  document.querySelectorAll(".pay-opt").forEach(o => o.classList.remove("sel"));
+  el.classList.add("sel");
+  payMethod = method;
+  document.getElementById("upiField").classList.toggle("show", method === "UPI");
+}
+
+/* ── COUPON ── */
+function applyCoupon(){
+  const code = document.getElementById("couponInput").value.trim().toUpperCase();
+  if (!code) { showMsg("fail","Please enter a coupon code."); return; }
+  if (COUPONS[code]) {
+    couponCode = code; discountPct = COUPONS[code];
+    showMsg("ok","🎉 \"" + code + "\" applied! You save " + discountPct + "%");
+    renderSummary();
+  } else {
+    showMsg("fail","❌ Invalid. Try: LUMI10, GLOW20, FIRST15, BEAUTY30");
+  }
+}
+function showMsg(cls, txt){ const m = document.getElementById("couponMsg"); m.className = "coupon-msg " + cls; m.textContent = txt; }
+
+/* ── VALIDATE ── */
+const REQUIRED = ["fName","lName","uEmail","uPhone","uStreet","uCity","uState","uPin"];
+function validate(){
+  for (const id of REQUIRED){
+    const el = document.getElementById(id);
+    const v  = el.value.trim();
+    if (!v) { markErr(el); return false; }
+    if (id==="uEmail" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) { markErr(el); return false; }
+    if (id==="uPin"   && !/^\d{6}$/.test(v))                     { markErr(el); return false; }
+    if (id==="uPhone" && v.replace(/\D/g,"").length < 10)        { markErr(el); return false; }
+  }
+  return true;
+}
+function markErr(el){ el.classList.add("err"); el.focus(); el.scrollIntoView({behavior:"smooth",block:"center"}); setTimeout(()=>el.classList.remove("err"),1500); }
+
+/* ── PLACE ORDER ── */
+async function placeOrder(){
+  if (!validate()) return;
+  if (cart.length === 0) { alert("Cart is empty."); return; }
+
+  const { subtotal, gst, discAmt, total } = calcPrices();
+
+  orderPlaced = {
+    orderId:   "LG" + String(Date.now()).slice(-6),
+    date:      new Date().toLocaleString("en-IN",{day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"}),
+    cart:      JSON.parse(JSON.stringify(cart)),
+    subtotal, gst, discAmt, total, couponCode, discountPct, payMethod,
+    customer:{
+      name:  document.getElementById("fName").value.trim() + " " + document.getElementById("lName").value.trim(),
+      email: document.getElementById("uEmail").value.trim(),
+      phone: document.getElementById("uPhone").value.trim()
+    },
+    address:{
+      street:   document.getElementById("uStreet").value.trim(),
+      landmark: document.getElementById("uLandmark").value.trim(),
+      city:     document.getElementById("uCity").value.trim(),
+      state:    document.getElementById("uState").value,
+      pincode:  document.getElementById("uPin").value.trim(),
+      note:     document.getElementById("uNote").value.trim()
+    }
+  };
+
+  localStorage.setItem("email", orderPlaced.customer.email);
+  document.getElementById("placeBtn").disabled = true;
+  document.getElementById("loadingOverlay").classList.add("show");
+
+  // Post to Spring Boot
+  try {
+    await fetch("http://localhost:8080/api/create-order",{
+      method:"POST", headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({
+        email: orderPlaced.customer.email,
+        customerName: orderPlaced.customer.name,
+        phone: orderPlaced.customer.phone,
+        address: orderPlaced.address,
+        totalPrice: total,
+        paymentMethod: payMethod,
+        couponCode: couponCode || null,
+        items: cart.map(i => ({id:i.id, name:i.name, price:i.price, qty:i.qty}))
+      })
+    });
+  } catch {}
+
+  await new Promise(r => setTimeout(r, 1200));
+  document.getElementById("loadingOverlay").classList.remove("show");
+
+  localStorage.removeItem("cart");
+  localStorage.removeItem("checkoutData");
+
+  showSuccess();
+}
+
+/* ── SUCCESS ── */
+function showSuccess(){
+  document.getElementById("stepConf").classList.add("active");
+  const o = orderPlaced;
+  const payIcons = {UPI:"📱",CARD:"💳",NETBANKING:"🏦",COD:"💵"};
+  document.getElementById("orderBadge").textContent = "Order #" + o.orderId;
+
+  document.getElementById("sucSummary").innerHTML =
+    o.cart.map(i =>
+      `<div class="suc-row"><span class="suc-lbl">${i.name} ×${i.qty}</span><span class="suc-val">${fmt(i.price*i.qty)}</span></div>`
+    ).join("") +
+    `<div class="suc-row"><span class="suc-lbl">Deliver to</span><span class="suc-val">${o.customer.name}, ${o.address.city}, ${o.address.state} – ${o.address.pincode}</span></div>
+     <div class="suc-row"><span class="suc-lbl">Payment</span><span class="suc-val">${payIcons[o.payMethod]||""} ${o.payMethod}</span></div>
+     <div class="suc-row total-row"><span style="font-weight:700;">Total Paid</span><span style="font-weight:700;color:var(--pink);">${fmt(o.total)}</span></div>`;
+
+  document.getElementById("successScreen").classList.add("show");
+}
+
+/* ── INVOICE ── */
+function showInvoice(){
+  const o = orderPlaced;
+  document.getElementById("invDate").textContent   = o.date;
+  document.getElementById("invCust").textContent   = o.customer.name;
+  document.getElementById("invAddr").innerHTML     =
+    o.address.street + (o.address.landmark ? ", " + o.address.landmark : "") +
+    "<br>" + o.address.city + ", " + o.address.state + " – " + o.address.pincode +
+    "<br>" + o.customer.phone + "<br>" + o.customer.email;
+  document.getElementById("invDetails").innerHTML  =
+    `Invoice No: <strong>${o.orderId}</strong><br>Date: ${o.date}<br><span style="color:var(--green);font-weight:700;">Confirmed ✓</span>`;
+
+  document.getElementById("invItems").innerHTML = o.cart.map(i =>
+    `<tr>
+       <td>${i.name}</td>
+       <td style="text-align:center;">${i.qty}</td>
+       <td style="text-align:right;">${fmt(i.price)}</td>
+       <td style="text-align:right;">${fmt(i.price*i.qty)}</td>
+     </tr>`).join("");
+
+  document.getElementById("inv_sub").textContent  = fmt(o.subtotal);
+  document.getElementById("inv_gst").textContent  = fmt(o.gst);
+  if (o.discAmt > 0) {
+    document.getElementById("inv_disc_row").style.display = "flex";
+    document.getElementById("inv_disc").textContent = "−" + fmt(o.discAmt) + " (" + o.couponCode + ")";
+  } else {
+    document.getElementById("inv_disc_row").style.display = "none";
+  }
+  document.getElementById("inv_total").textContent = fmt(o.total);
+  document.getElementById("inv_pay").textContent   = o.payMethod;
+  document.getElementById("invoiceModal").classList.add("show");
+}
+function closeInvoice(){ document.getElementById("invoiceModal").classList.remove("show"); }
+
+/* ── INIT ── */
+document.getElementById("uEmail").value = localStorage.getItem("email") || "";
+loadCart();
+</script>
+</body>
+</html>

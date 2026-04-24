@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Product | LumiGlow</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #ffe6f0, #fff0f5);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .box {
+            width: 400px;
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 25px;
+            box-shadow: 0 15px 35px rgba(233,30,99,0.15);
+            text-align: center;
+        }
+
+        h2 { color: #e91e63; margin-bottom: 25px; font-weight: 600; }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ffb3d1;
+            border-radius: 12px;
+            font-family: 'Poppins';
+            box-sizing: border-box;
+            transition: 0.3s;
+        }
+
+        input:focus { outline: none; border-color: #e91e63; box-shadow: 0 0 8px rgba(233,30,99,0.2); }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #e91e63, #ff4d88);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 16px;
+            margin-top: 20px;
+            box-shadow: 0 8px 20px rgba(233,30,99,0.3);
+            transition: 0.3s;
+        }
+
+        button:hover { transform: translateY(-2px); opacity: 0.9; }
+    </style>
+</head>
+<body>
+
+<div class="box">
+    <h2>Edit Product</h2>
+    <form id="editForm">
+        <input type="text" id="name" placeholder="Product Name" required>
+        <input type="number" id="price" placeholder="Price" required>
+        <input type="number" id="quantity" placeholder="Quantity" required>
+        <input type="text" id="net_weight" placeholder="Net Weight" required>
+        <textarea id="description" placeholder="Description" rows="3" required></textarea>
+        <select id="category" required>
+            <option value="">Select Category</option>
+            <option value="skincare">Skincare</option>
+            <option value="makeup">Makeup</option>
+            <option value="haircare">Haircare</option>
+        </select>
+        <input type="text" id="image" placeholder="Image URL" required>
+        <button type="submit">Update Product</button>
+    </form>
+</div>
+
+<script>
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id");
+
+    async function loadData() {
+        if(!id) return alert("No ID found in URL!");
+        try {
+            const res = await fetch(`http://localhost:8080/product/${id}`);
+            const p = await res.json();
+            
+            document.getElementById("name").value = p.name || "";
+            document.getElementById("price").value = p.price || "";
+            document.getElementById("quantity").value = p.quantity || "";
+            document.getElementById("net_weight").value = p.net_weight || "";
+            document.getElementById("description").value = p.description || "";
+            document.getElementById("category").value = p.category || "";
+            document.getElementById("image").value = p.image || "";
+        } catch(err) { console.error("Load error:", err); }
+    }
+    loadData();
+
+    document.getElementById("editForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const data = {
+            name: document.getElementById("name").value,
+            price: document.getElementById("price").value,
+            quantity: document.getElementById("quantity").value,
+            net_weight: document.getElementById("net_weight").value,
+            description: document.getElementById("description").value,
+            category: document.getElementById("category").value,
+            image: document.getElementById("image").value
+        };
+
+        try {
+            const res = await fetch(`http://localhost:8080/update-product/${id}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            });
+            const result = await res.text();
+            if(res.ok) {
+                alert("Success: " + result);
+                window.location.href = "product-management.html";
+            } else {
+                alert("Error: " + result);
+            }
+        } catch(err) { alert("Failed to connect to server"); }
+    });
+</script>
+</body>
+</html>

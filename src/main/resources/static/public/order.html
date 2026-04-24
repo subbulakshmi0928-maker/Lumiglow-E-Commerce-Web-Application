@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lumiglow Orders</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,600&family=DM+Sans:wght@300;400;500&display=swap');
+    :root{--blush:#fce8f3;--petal:#f9d0e8;--rose:#e8147a;--deep-rose:#b50060;--velvet:#7a0040;--cream:#fffaf8;--silk:#fff5fa;--ink:#2a0015;--muted:#a0607a;--card-shadow:0 8px 40px rgba(180,0,80,.10);}
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);}
+    .shell{display:flex;min-height:100vh;}
+    .sidebar{width:250px;min-height:100vh;background:linear-gradient(175deg,#fff0f8 0%,#ffe4f2 60%,#ffd6ec 100%);border-right:1px solid rgba(232,20,122,.10);display:flex;flex-direction:column;flex-shrink:0;position:relative;}
+    .logo-box{padding:36px 28px 24px;}
+    .logo-eyebrow{font-size:9px;letter-spacing:4px;text-transform:uppercase;color:var(--muted);font-weight:500;margin-bottom:6px;}
+    .logo-box h2{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:300;color:var(--rose);letter-spacing:3px;line-height:1;}
+    .logo-box h2 em{font-style:italic;font-weight:600;}
+    .logo-divider{width:40px;height:1.5px;background:linear-gradient(90deg,var(--rose),transparent);margin-top:14px;}
+    .nav-section-label{padding:0 28px;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);font-weight:500;margin:16px 0 8px;opacity:.7;}
+    nav{padding:0 14px;}
+    nav a{display:flex;align-items:center;gap:12px;padding:11px 16px;text-decoration:none;color:var(--velvet);font-size:12px;font-weight:500;margin-bottom:3px;border-radius:14px;transition:all .25s;cursor:pointer;position:relative;overflow:hidden;}
+    nav a::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(232,20,122,.10),rgba(232,20,122,.04));opacity:0;border-radius:inherit;transition:opacity .25s;}
+    nav a:hover::before,nav a.active::before{opacity:1;}
+    nav a:hover,nav a.active{color:var(--rose);}
+    .nav-icon{width:30px;height:30px;background:white;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:13px;box-shadow:0 2px 8px rgba(180,0,80,.08);flex-shrink:0;}
+    nav a.active .nav-icon,nav a:hover .nav-icon{background:var(--rose);}
+    .sidebar-spacer{flex:1;}
+    .sidebar-footer{padding:20px 28px 28px;border-top:1px solid rgba(232,20,122,.08);}
+    .sidebar-footer a{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:500;color:var(--muted);text-decoration:none;letter-spacing:.5px;transition:color .2s;cursor:pointer;}
+    .sidebar-footer a:hover{color:var(--rose);}
+    .content{flex:1;padding:40px 40px 40px 36px;overflow-x:hidden;}
+    .top-action-bar{display:flex;justify-content:flex-end;gap:10px;margin-bottom:20px;}
+    .btn-dashboard{display:inline-flex;align-items:center;gap:8px;background:white;border:1.5px solid rgba(232,20,122,0.20);color:var(--velvet);padding:10px 20px;border-radius:50px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer;letter-spacing:0.4px;box-shadow:var(--card-shadow);transition:all 0.25s;}
+    .btn-dashboard:hover{background:var(--blush);border-color:var(--rose);color:var(--rose);transform:translateY(-1px);}
+    .btn-close{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--rose),var(--deep-rose));color:white;border:none;padding:10px 20px;border-radius:50px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer;letter-spacing:0.4px;box-shadow:0 4px 16px rgba(232,20,122,0.30);transition:all 0.25s;}
+    .btn-close:hover{transform:translateY(-1px);box-shadow:0 6px 22px rgba(232,20,122,0.42);}
+    .header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:32px;}
+    .header-left .greeting{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);font-weight:500;margin-bottom:6px;}
+    .header-left h1{font-family:'Cormorant Garamond',serif;font-size:38px;font-weight:300;line-height:1.1;}
+    .header-left h1 em{font-style:italic;color:var(--rose);font-weight:600;}
+    .header-right{display:flex;align-items:center;gap:12px;padding-top:6px;}
+    .live-badge{display:flex;align-items:center;gap:8px;background:white;border:1px solid rgba(232,20,122,.15);border-radius:50px;padding:9px 18px;font-size:11px;font-weight:500;color:var(--velvet);box-shadow:var(--card-shadow);}
+    .live-dot{width:7px;height:7px;background:var(--rose);border-radius:50%;animation:pulse 2s infinite;}
+    @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(232,20,122,.5);}50%{box-shadow:0 0 0 5px rgba(232,20,122,0);}}
+    .date-badge{background:white;border:1px solid rgba(232,20,122,.10);border-radius:50px;padding:9px 18px;font-size:11px;color:var(--muted);box-shadow:var(--card-shadow);}
+    .summary-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;}
+    .sum-card{background:white;border-radius:18px;padding:20px 22px;border:1px solid rgba(232,20,122,.07);box-shadow:var(--card-shadow);display:flex;align-items:center;gap:14px;}
+    .sum-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+    .sum-info p{font-size:9px;text-transform:uppercase;letter-spacing:2px;color:var(--muted);font-weight:500;margin-bottom:4px;}
+    .sum-info strong{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:300;color:var(--ink);display:block;line-height:1;}
+    .rev-card{background:linear-gradient(135deg,#f0196a 0%,#c2005a 50%,#8a003e 100%) !important;border-color:transparent !important;box-shadow:0 12px 40px rgba(180,0,80,.28) !important;}
+    .rev-card .sum-info p{color:rgba(255,255,255,.65) !important;}
+    .rev-card .sum-info strong{color:white !important;}
+    .filters-row{display:flex;align-items:center;gap:12px;margin-bottom:24px;flex-wrap:wrap;}
+    .search-box{display:flex;align-items:center;gap:10px;background:white;border:1px solid rgba(232,20,122,.13);border-radius:14px;padding:10px 18px;flex:1;min-width:200px;box-shadow:var(--card-shadow);}
+    .search-box input{border:none;outline:none;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--ink);background:transparent;width:100%;}
+    .search-box input::placeholder{color:var(--muted);}
+    .filter-btn{background:white;border:1px solid rgba(232,20,122,.13);border-radius:12px;padding:9px 16px;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;color:var(--velvet);cursor:pointer;transition:all .2s;box-shadow:var(--card-shadow);}
+    .filter-btn:hover,.filter-btn.active{background:var(--rose);color:white;border-color:var(--rose);}
+    .orders-wrap{background:white;border-radius:24px;border:1px solid rgba(232,20,122,.07);box-shadow:var(--card-shadow);overflow:hidden;}
+    .table-head{display:flex;justify-content:space-between;align-items:center;padding:22px 28px 18px;}
+    .card-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;}
+    .card-title em{font-style:italic;color:var(--rose);}
+    .card-tag{font-size:9.5px;letter-spacing:2px;text-transform:uppercase;color:var(--rose);background:var(--blush);padding:5px 12px;border-radius:20px;font-weight:600;}
+    table{width:100%;border-collapse:collapse;}
+    thead tr{background:var(--blush);}
+    th{padding:11px 14px;font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--muted);text-align:left;}
+    th:first-child{padding-left:28px;}
+    th:last-child{padding-right:28px;text-align:center;}
+    tbody tr{border-bottom:1px solid rgba(232,20,80,.06);transition:background .2s;cursor:pointer;}
+    tbody tr:hover{background:var(--silk);}
+    tbody tr:last-child{border-bottom:none;}
+    td{padding:14px 14px;font-size:12px;color:var(--ink);vertical-align:middle;}
+    td:first-child{padding-left:28px;}
+    td:last-child{padding-right:28px;}
+    .order-id{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:600;color:var(--rose);}
+    .order-date{font-size:10px;color:var(--muted);margin-top:2px;}
+    .customer-email{font-size:12px;font-weight:500;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+    .pay-badge{display:inline-block;background:var(--blush);color:var(--velvet);border-radius:8px;padding:3px 10px;font-size:10px;font-weight:500;}
+    .amount{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:400;}
+    .status-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:20px;font-size:10px;font-weight:600;letter-spacing:.4px;white-space:nowrap;}
+    .s-Delivered{background:#eafaf0;color:#1a6e3a;}.s-Processing{background:#fff5e0;color:#8a6200;}.s-Shipped{background:#e6f2ff;color:#0a4fa6;}.s-Cancelled{background:#fde8e8;color:#8a1515;}.s-Pending{background:var(--blush);color:var(--velvet);}
+    .dot{width:5px;height:5px;border-radius:50%;display:inline-block;}
+    .d-Delivered{background:#1a6e3a;}.d-Processing{background:#c9920a;}.d-Shipped{background:#1469cc;}.d-Cancelled{background:#c21a1a;}.d-Pending{background:var(--rose);}
+    .action-btns{display:flex;align-items:center;justify-content:center;gap:6px;}
+    .act-btn{width:28px;height:28px;border-radius:8px;border:1px solid rgba(232,20,122,.15);background:white;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;transition:all .2s;}
+    .act-btn:hover{background:var(--rose);border-color:var(--rose);}
+    .state-box{text-align:center;padding:60px 20px;}
+    .state-box .icon{font-size:40px;margin-bottom:16px;}
+    .state-box p{color:var(--muted);font-size:13px;}
+    .spinner{width:36px;height:36px;border:3px solid var(--blush);border-top-color:var(--rose);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 16px;}
+    @keyframes spin{to{transform:rotate(360deg);}}
+    .retry-btn{margin-top:16px;background:var(--rose);color:white;border:none;border-radius:12px;padding:10px 24px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;}
+    .modal-backdrop{position:fixed;inset:0;background:rgba(42,0,21,.5);z-index:999;display:flex;align-items:center;justify-content:center;}
+    .modal{background:white;border-radius:28px;width:480px;max-width:92vw;max-height:86vh;overflow-y:auto;box-shadow:0 30px 80px rgba(180,0,80,.25);}
+    .modal-hdr{padding:26px 30px 18px;border-bottom:1px solid rgba(232,20,122,.08);display:flex;justify-content:space-between;align-items:center;}
+    .modal-ttl{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;}
+    .modal-ttl em{font-style:italic;color:var(--rose);font-weight:600;}
+    .modal-close{background:var(--blush);border:none;width:32px;height:32px;border-radius:9px;cursor:pointer;font-size:16px;color:var(--rose);display:flex;align-items:center;justify-content:center;}
+    .modal-body{padding:22px 30px 28px;}
+    .info-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px;}
+    .info-box{background:var(--blush);border-radius:14px;padding:13px 16px;}
+    .info-box label{font-size:9px;text-transform:uppercase;letter-spacing:2px;color:var(--muted);font-weight:500;display:block;margin-bottom:4px;}
+    .info-box span{font-size:12.5px;font-weight:500;color:var(--ink);word-break:break-all;}
+    .modal-amount{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:300;color:var(--rose);text-align:center;padding:16px 0;border-top:1px solid rgba(232,20,122,.08);border-bottom:1px solid rgba(232,20,122,.08);margin-bottom:18px;}
+    .modal-amount span{font-size:13px;color:var(--muted);font-family:'DM Sans',sans-serif;display:block;margin-top:4px;}
+    .status-opts{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;}
+    .s-opt{border:1px solid rgba(232,20,122,.20);border-radius:10px;padding:7px 14px;font-size:11px;font-weight:600;cursor:pointer;background:white;color:var(--velvet);transition:all .2s;font-family:'DM Sans',sans-serif;}
+    .s-opt:hover,.s-opt.sel{background:var(--rose);color:white;border-color:var(--rose);}
+    .items-section{margin-top:18px;}
+    .items-title{font-size:9px;text-transform:uppercase;letter-spacing:2px;color:var(--muted);font-weight:500;margin-bottom:10px;}
+    .item-row{display:flex;align-items:center;gap:12px;background:var(--silk);border-radius:12px;padding:10px 14px;margin-bottom:8px;}
+    .item-img{width:38px;height:38px;border-radius:8px;object-fit:cover;background:var(--blush);}
+    .item-name{font-size:12px;font-weight:500;flex:1;}
+    .item-qty{font-size:11px;color:var(--muted);}
+    .item-price{font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--rose);}
+    .save-btn{display:block;width:100%;margin-top:20px;background:linear-gradient(90deg,var(--rose),var(--deep-rose));color:white;border:none;border-radius:14px;padding:13px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;letter-spacing:.5px;transition:all .2s;}
+    .save-btn:hover{box-shadow:0 6px 24px rgba(232,20,122,.4);transform:translateY(-1px);}
+    .saving-msg{text-align:center;font-size:11px;color:var(--muted);margin-top:8px;min-height:16px;}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+    .orders-wrap,.summary-strip{animation:fadeUp .5s ease both;}
+  </style>
+</head>
+<body>
+<div class="shell">
+  <aside class="sidebar">
+    <div class="logo-box">
+      <p class="logo-eyebrow">Luxe Admin Panel</p>
+      <h2><em>Lumi</em>Glow</h2>
+      <div class="logo-divider"></div>
+    </div>
+    <p class="nav-section-label">Catalog</p>
+    <nav>
+      <a onclick="goAdd()"><span class="nav-icon">✦</span><span>Add Product</span></a>
+      <a onclick="goView()"><span class="nav-icon">🌸</span><span>View Store</span></a>
+      <a onclick="goProductList()"><span class="nav-icon">📦</span><span>Product List</span></a>
+      <a onclick="goCategory()"><span class="nav-icon">🗂</span><span>Categories</span></a>
+    </nav>
+    <p class="nav-section-label">Commerce</p>
+    <nav>
+      <a class="active" onclick="goOrders()"><span class="nav-icon">🛒</span><span>Orders</span></a>
+      <a onclick="goCustomers()"><span class="nav-icon">👥</span><span>Customers</span></a>
+      <a onclick="goPayments()"><span class="nav-icon">💳</span><span>Payments</span></a>
+    </nav>
+    <div class="sidebar-spacer"></div>
+    <div class="sidebar-footer">
+      <a onclick="logout()"><span style="font-size:14px;">⟵</span><span>Sign Out</span></a>
+    </div>
+  </aside>
+
+  <main class="content">
+    <div class="top-action-bar">
+      <button class="btn-dashboard" onclick="goDashboard()">🏠 &nbsp;Dashboard</button>
+      <button class="btn-close" onclick="closePage()">✕ &nbsp;Close</button>
+    </div>
+
+    <div class="header">
+      <div class="header-left">
+        <p class="greeting">Commerce · Orders</p>
+        <h1>Order <em>Collection</em></h1>
+      </div>
+      <div class="header-right">
+        <div class="live-badge"><span class="live-dot"></span>Live from DB</div>
+        <div class="date-badge" id="dateBadge"></div>
+      </div>
+    </div>
+
+    <div class="summary-strip">
+      <div class="sum-card"><div class="sum-icon" style="background:var(--blush);">🛒</div><div class="sum-info"><p>Total Orders</p><strong id="s-total">—</strong></div></div>
+      <div class="sum-card"><div class="sum-icon" style="background:#eafaf0;">✅</div><div class="sum-info"><p>Delivered</p><strong id="s-delivered">—</strong></div></div>
+      <div class="sum-card"><div class="sum-icon" style="background:#fff5e0;">⏳</div><div class="sum-info"><p>Pending</p><strong id="s-pending">—</strong></div></div>
+      <div class="sum-card rev-card"><div class="sum-icon" style="background:rgba(255,255,255,.2);">💎</div><div class="sum-info"><p>Net Revenue</p><strong id="s-revenue">—</strong></div></div>
+    </div>
+
+    <div class="filters-row">
+      <div class="search-box">
+        <span style="font-size:14px;color:var(--muted);">🔍</span>
+        <input type="text" placeholder="Search by order ID, email or payment…" id="searchInput" oninput="render()">
+      </div>
+      <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
+      <button class="filter-btn" onclick="setFilter('Pending',this)">Pending</button>
+      <button class="filter-btn" onclick="setFilter('Shipped',this)">Shipped</button>
+      <button class="filter-btn" onclick="setFilter('Delivered',this)">Delivered</button>
+      <button class="filter-btn" onclick="setFilter('Cancelled',this)">Cancelled</button>
+    </div>
+
+    <div class="orders-wrap">
+      <div class="table-head">
+        <h3 class="card-title">All <em>Orders</em></h3>
+        <span class="card-tag" id="countTag">Loading…</span>
+      </div>
+      <div id="tableArea">
+        <div class="state-box"><div class="spinner"></div><p>Connecting to your Spring Boot API…</p></div>
+      </div>
+    </div>
+  </main>
+</div>
+<div id="modalRoot"></div>
+
+<script>
+  // ── FIXED: matches your Spring Boot @RequestMapping("/orders") ──
+  const API = 'http://localhost:8080/api';
+
+  let allOrders = [];
+  let activeFilter = 'all';
+  let modalOrderId = null;
+  let selectedStatus = null;
+
+  document.getElementById('dateBadge').textContent =
+    new Date().toLocaleDateString('en-IN', { weekday:'short', day:'numeric', month:'long', year:'numeric' });
+
+  async function loadOrders() {
+    document.getElementById('tableArea').innerHTML = '<div class="state-box"><div class="spinner"></div><p>Fetching orders from database…</p></div>';
+    try {
+      const res = await fetch(API + '/orders');
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      allOrders = await res.json();
+      updateSummary();
+      render();
+    } catch(e) {
+      console.error('Orders fetch error:', e);
+      document.getElementById('tableArea').innerHTML =
+        '<div class="state-box">' +
+        '<div class="icon">⚠️</div>' +
+        '<p>Could not reach <strong>' + API + '/orders</strong></p>' +
+        '<p style="margin-top:6px;font-size:11px;">Make sure Spring Boot is running and CORS is enabled.</p>' +
+        '<button class="retry-btn" onclick="loadOrders()">Retry</button>' +
+        '</div>';
+      document.getElementById('countTag').textContent = 'Error';
+    }
+  }
+
+  function updateSummary() {
+    const total     = allOrders.length;
+    const delivered = allOrders.filter(o => o.status === 'Delivered').length;
+    const pending   = allOrders.filter(o => o.status === 'Pending').length;
+    // ── FIXED: your model uses totalPrice not totalAmount ──
+    const revenue   = allOrders
+      .filter(o => o.status !== 'Cancelled')
+      .reduce((s, o) => s + (o.totalPrice || 0), 0);
+
+    document.getElementById('s-total').textContent     = total;
+    document.getElementById('s-delivered').textContent = delivered;
+    document.getElementById('s-pending').textContent   = pending;
+    document.getElementById('s-revenue').textContent   = '₹' + revenue.toLocaleString('en-IN');
+  }
+
+  function setFilter(f, btn) {
+    activeFilter = f;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    render();
+  }
+
+  function render() {
+    const q = document.getElementById('searchInput').value.toLowerCase();
+    let list = allOrders.filter(o => {
+      if (activeFilter !== 'all' && o.status !== activeFilter) return false;
+      if (q) {
+        const id    = String(o.id).toLowerCase();
+        const email = (o.userEmail || '').toLowerCase();
+        const pay   = (o.paymentMethod || '').toLowerCase();
+        if (!id.includes(q) && !email.includes(q) && !pay.includes(q)) return false;
+      }
+      return true;
+    });
+
+    document.getElementById('countTag').textContent = list.length + ' Order' + (list.length !== 1 ? 's' : '');
+
+    if (list.length === 0) {
+      document.getElementById('tableArea').innerHTML = '<div class="state-box"><div class="icon">🌸</div><p>No orders match your filter.</p></div>';
+      return;
+    }
+
+    const rows = list.map(o => {
+      const st  = o.status || 'Pending';
+      // ── FIXED: your model uses orderDate not createdAt ──
+      const dt  = o.orderDate ? new Date(o.orderDate).toLocaleDateString('en-IN', {day:'2-digit', month:'short', year:'numeric'}) : '—';
+      const pay = o.paymentMethod || '—';
+      const amt = (o.totalPrice || 0).toLocaleString('en-IN');
+      return '<tr onclick="openModal(' + o.id + ')">' +
+        '<td><div class="order-id">#LG-' + String(o.id).padStart(4,'0') + '</div><div class="order-date">' + dt + '</div></td>' +
+        '<td><div class="customer-email" title="' + (o.userEmail||'') + '">' + (o.userEmail||'—') + '</div></td>' +
+        '<td><span class="pay-badge">' + pay + '</span></td>' +
+        '<td><span class="amount">₹' + amt + '</span></td>' +
+        '<td><span class="status-badge s-' + st + '"><span class="dot d-' + st + '"></span>' + st + '</span></td>' +
+        '<td onclick="event.stopPropagation()"><div class="action-btns">' +
+        '<button class="act-btn" title="View" onclick="openModal(' + o.id + ')">👁</button>' +
+        '<button class="act-btn" title="Update Status" onclick="openModal(' + o.id + ')">✏️</button>' +
+        '</div></td>' +
+        '</tr>';
+    }).join('');
+
+    document.getElementById('tableArea').innerHTML =
+      '<table><thead><tr>' +
+      '<th>Order ID</th><th>Customer Email</th><th>Payment</th><th>Amount</th><th>Status</th><th>Actions</th>' +
+      '</tr></thead><tbody>' + rows + '</tbody></table>';
+  }
+
+  function openModal(id) {
+    const o = allOrders.find(x => x.id === id);
+    if (!o) return;
+    modalOrderId = id;
+    selectedStatus = null;
+
+    const st  = o.status || 'Pending';
+    const dt  = o.orderDate ? new Date(o.orderDate).toLocaleString('en-IN') : '—';
+    const all = ['Pending','Processing','Shipped','Delivered','Cancelled'];
+
+    // ── Order items ──
+    const itemsHtml = (o.items && o.items.length > 0)
+      ? '<div class="items-section">' +
+        '<div class="items-title">Order Items (' + o.items.length + ')</div>' +
+        o.items.map(item =>
+          '<div class="item-row">' +
+          (item.productImage ? '<img class="item-img" src="' + item.productImage + '" onerror="this.style.display=\'none\'">' : '<div class="item-img"></div>') +
+          '<div class="item-name">' + (item.productName || 'Product') + '</div>' +
+          '<div class="item-qty">x' + (item.quantity || 1) + '</div>' +
+          '<div class="item-price">₹' + (item.price || 0).toLocaleString('en-IN') + '</div>' +
+          '</div>'
+        ).join('') +
+        '</div>'
+      : '';
+
+    document.getElementById('modalRoot').innerHTML =
+      '<div class="modal-backdrop" onclick="closeModal(event)">' +
+      '<div class="modal" onclick="event.stopPropagation()">' +
+      '<div class="modal-hdr">' +
+      '<div class="modal-ttl">Order <em>#LG-' + String(o.id).padStart(4,'0') + '</em></div>' +
+      '<button class="modal-close" onclick="closeModal()">✕</button>' +
+      '</div>' +
+      '<div class="modal-body">' +
+      '<div class="modal-amount">₹' + (o.totalPrice||0).toLocaleString('en-IN') + '<span>Total Amount</span></div>' +
+      '<div class="info-grid">' +
+      '<div class="info-box"><label>Customer Email</label><span>' + (o.userEmail||'—') + '</span></div>' +
+      '<div class="info-box"><label>Payment Method</label><span>' + (o.paymentMethod||'—') + '</span></div>' +
+      '<div class="info-box"><label>Order Date</label><span>' + dt + '</span></div>' +
+      '<div class="info-box"><label>Current Status</label><span class="status-badge s-' + st + '" style="font-size:10px;"><span class="dot d-' + st + '"></span>' + st + '</span></div>' +
+      '</div>' +
+      itemsHtml +
+      '<div style="margin-top:18px;">' +
+      '<div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:var(--muted);font-weight:500;margin-bottom:10px;">Update Status</div>' +
+      '<div class="status-opts">' +
+      all.map(s => '<button class="s-opt' + (s===st?' sel':'') + '" onclick="selectStatus(\'' + s + '\',this)">' + s + '</button>').join('') +
+      '</div></div>' +
+      '<button class="save-btn" onclick="saveStatus()">Save Status Update</button>' +
+      '<div class="saving-msg" id="savingMsg"></div>' +
+      '</div></div></div>';
+  }
+
+  function closeModal(e) {
+    if (!e || e.target.classList.contains('modal-backdrop')) {
+      document.getElementById('modalRoot').innerHTML = '';
+    }
+  }
+
+  function selectStatus(s, btn) {
+    selectedStatus = s;
+    btn.closest('.status-opts').querySelectorAll('.s-opt').forEach(b => b.classList.remove('sel'));
+    btn.classList.add('sel');
+  }
+
+  async function saveStatus() {
+    if (!modalOrderId || !selectedStatus) {
+      document.getElementById('savingMsg').textContent = 'Please select a status first.';
+      return;
+    }
+    document.getElementById('savingMsg').textContent = 'Saving…';
+    try {
+      // ── FIXED: correct endpoint without /api prefix ──
+      const res = await fetch(API + '/update-order/' + modalOrderId, {
+        method:  'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ status: selectedStatus })
+      });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const updated = await res.json();
+      const idx = allOrders.findIndex(o => o.id === modalOrderId);
+      if (idx !== -1) allOrders[idx].status = updated.status || selectedStatus;
+      document.getElementById('savingMsg').textContent = '✓ Status updated successfully!';
+      updateSummary();
+      render();
+      setTimeout(() => closeModal(), 1200);
+    } catch(e) {
+      console.error('Status update error:', e);
+      document.getElementById('savingMsg').textContent = '⚠ Failed to update. Check your API.';
+    }
+  }
+
+  /* ── NAVIGATION ── */
+  function goAdd()         { window.location.href = "add-product.html"; }
+  function goView()        { window.location.href = "home1.html"; }
+  function goProductList() { window.location.href = "product-list.html"; }
+  function goCategory()    { window.location.href = "category-management.html"; }
+  function goOrders()      { window.location.href = "order.html"; }
+  function goCustomers()   { window.location.href = "admin-orders.html"; }
+  function goPayments()    { window.location.href = "payment-management.html"; }
+  function logout()        { window.location.href = "admin.html"; }
+  function goDashboard()   { window.location.href = "dashboard.html"; }
+  function closePage()     { window.close(); }
+
+  loadOrders();
+</script>
+</body>
+</html>

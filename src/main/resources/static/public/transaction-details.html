@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>LumiGlow Admin | Transaction Details</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --sidebar-pink: #2d0b1a;
+    --accent-pink: #ff2d8d;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    display: flex;
+    background-color: #fdf2f7;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 250px;
+    height: 100vh;
+    background: var(--sidebar-pink);
+    color: white;
+    position: fixed;
+    padding-top: 20px;
+}
+
+.sidebar h2 {
+    text-align: center;
+    color: var(--accent-pink);
+}
+
+.sidebar a {
+    display: block;
+    color: white;
+    padding: 15px 25px;
+    text-decoration: none;
+}
+
+.sidebar a:hover,
+.sidebar a.active {
+    background: rgba(255,45,141,0.1);
+    border-left: 4px solid var(--accent-pink);
+    color: var(--accent-pink);
+}
+
+.main-content {
+    margin-left: 250px;
+    padding: 40px;
+    width: calc(100% - 250px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.btn-back {
+    align-self: flex-start;
+    margin-bottom: 20px;
+    text-decoration: none;
+    color: #2d0b1a;
+    font-weight: 600;
+    background: white;
+    padding: 8px 15px;
+    border-radius: 5px;
+    border: 1px solid #ffc2df;
+}
+
+.box {
+    width: 100%;
+    max-width: 500px;
+    background: white;
+    padding: 35px;
+    border-radius: 20px;
+    border: 1px solid #ffc2df;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+
+.box h2 {
+    color: #e91e63;
+    text-align: center;
+}
+
+p {
+    font-size: 16px;
+    margin: 15px 0;
+    color: #333;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 8px;
+}
+
+p b {
+    color: #ad1457;
+    display: inline-block;
+    width: 150px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="sidebar">
+    <h2>LumiGlow Admin</h2>
+
+    <a href="dashboard.html">Dashboard</a>
+    <a href="product-management.html">Products</a>
+    <a href="category-management.html">Categories</a>
+    <a href="order.html">Orders</a>
+    <a href="customer-management.html">Customers</a>
+    <a href="payment-management.html" class="active">Payments</a>
+    <a href="admin.html">Logout</a>
+</div>
+
+<div class="main-content">
+
+<a href="#" onclick="window.history.back()" class="btn-back">
+← Back
+</a>
+
+<div class="box">
+
+<h2>Transaction Details</h2>
+
+<div id="data-container">
+
+Loading transaction details...
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+const params = new URLSearchParams(window.location.search);
+const id = params.get("id");
+
+async function loadDetails() {
+
+    if (!id) {
+
+        document.getElementById("data-container")
+        .innerHTML = "No ID found";
+
+        return;
+
+    }
+
+    try {
+
+        const response =
+        await fetch(
+        `http://localhost:8080/api/payment/${id}`
+        );
+
+        if (!response.ok) {
+
+            document.getElementById("data-container")
+            .innerHTML = "Transaction not found";
+
+            return;
+
+        }
+
+        const data = await response.json();
+
+        document.getElementById("data-container")
+        .innerHTML = `
+
+<p><b>ID:</b> ${data.id}</p>
+
+<p><b>Order ID:</b> ${data.order_id}</p>
+
+<p><b>User Email:</b> ${data.user_email}</p>
+
+<p><b>Amount:</b> ₹${data.amount}</p>
+
+<p><b>Payment Method:</b> ${data.payment_method}</p>
+
+<p><b>Transaction ID:</b> ${data.transaction_id || 'N/A'}</p>
+
+<p><b>Status:</b> ${data.payment_status}</p>
+
+<p><b>Payment Date:</b> ${data.payment_date}</p>
+
+`;
+
+    }
+
+    catch (error) {
+
+        console.error("Error:", error);
+
+        document.getElementById("data-container")
+        .innerHTML = "Error loading transaction";
+
+    }
+
+}
+
+loadDetails();
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment | LumiGlow Boutique</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --pink: #e91e63;
+            --pink-light: #fff0f5;
+            --dark: #2d1a22;
+            --border: #ffe6f2;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #fce4ec 0%, #f8bbd0 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 25px;
+            box-shadow: 0 15px 35px rgba(233, 30, 99, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: var(--pink);
+            font-weight: 600;
+        }
+
+        .summary-card {
+            background: var(--pink-light);
+            border: 2px solid var(--border);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .item-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .item-row:last-child { border-bottom: none; }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--pink);
+        }
+
+        .method-select {
+            width: 100%;
+            padding: 15px;
+            border-radius: 12px;
+            border: 2px solid var(--border);
+            outline: none;
+            font-family: 'Poppins', sans-serif;
+            margin-top: 10px;
+        }
+
+        .pay-btn {
+            width: 100%;
+            padding: 18px;
+            background: var(--pink);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 25px;
+            box-shadow: 0 8px 15px rgba(233, 30, 99, 0.2);
+        }
+
+        .pay-btn:hover {
+            background: #c2185b;
+            transform: translateY(-2px);
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 15px;
+            color: #888;
+            text-decoration: none;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Secure Payment</h2>
+    
+    <div class="summary-card">
+        <div id="itemList">
+            </div>
+        <div class="total-row">
+            <span>Total to Pay</span>
+            <span id="finalAmount">₹0</span>
+        </div>
+    </div>
+
+    <label class="label" style="font-size: 12px; font-weight: 600; color: #e91e63; text-transform: uppercase;">Select Payment Method</label>
+    <select class="method-select" id="payMethod">
+        <option value="">-- Choose Method --</option>
+        <option value="UPI">UPI / Google Pay</option>
+        <option value="CARD">Debit / Credit Card</option>
+        <option value="COD">Cash on Delivery</option>
+    </select>
+
+    <button class="pay-btn" onclick="processPayment()">Complete Order</button>
+    <a href="home1.html" class="back-link">Cancel and Return</a>
+</div>
+
+<script>
+    // 1. DATA LOGIC: Decide if we show the Direct Item or the Cart
+    const directData = JSON.parse(localStorage.getItem("directProduct"));
+    const cartData = JSON.parse(localStorage.getItem("cart")) || [];
+    const email = localStorage.getItem("email");
+
+    let itemsToBuy = [];
+    let totalAmount = 0;
+
+    function initPayment() {
+        const listDiv = document.getElementById("itemList");
+        
+        // Use direct item if available, otherwise use cart
+        if (directData) {
+            itemsToBuy = [directData];
+        } else {
+            itemsToBuy = cartData;
+        }
+
+        if (itemsToBuy.length === 0) {
+            listDiv.innerHTML = "<p style='text-align:center'>No items selected.</p>";
+            return;
+        }
+
+        // Render HTML
+        let html = "";
+        itemsToBuy.forEach(item => {
+            const price = parseFloat(item.price) || 0;
+            const qty = parseInt(item.qty) || 1;
+            const subtotal = price * qty;
+            totalAmount += subtotal;
+
+            html += `
+                <div class="item-row">
+                    <span>${item.name} (x${qty})</span>
+                    <span>₹${subtotal}</span>
+                </div>
+            `;
+        });
+
+        listDiv.innerHTML = html;
+        document.getElementById("finalAmount").innerText = "₹" + totalAmount;
+    }
+
+    // 2. PROCESS PAYMENT
+    async function processPayment() {
+        const method = document.getElementById("payMethod").value;
+
+        if (!method) {
+            alert("Please select a payment method.");
+            return;
+        }
+
+        if (!email) {
+            alert("Email missing. Please go back and enter details.");
+            return;
+        }
+
+        const orderData = {
+            email: email,
+            totalPrice: totalAmount,
+            paymentMethod: method,
+            items: itemsToBuy
+        };
+
+        try {
+            const res = await fetch("http://localhost:8080/api/create-order", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(orderData)
+            });
+
+            if (res.ok) {
+                alert("Payment Successful! Order Placed.");
+                
+                // Cleanup
+                localStorage.removeItem("directProduct");
+                if (!directData) localStorage.removeItem("cart"); // Only clear cart if it wasn't a direct buy
+                
+                window.location.href = "home1.html"; 
+            } else {
+                alert("Server error during payment. Please try again.");
+            }
+        } catch (err) {
+            console.error(err);
+            alert("Connection error. Check your Spring Boot backend.");
+        }
+    }
+
+    // Start the page
+    initPayment();
+</script>
+
+</body>
+</html>

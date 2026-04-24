@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LumiGlow | Admin Portal</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Reset and Box Sizing */
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            background: #fffafa;
+        }
+
+        /* LEFT BRAND PANEL */
+        .left {
+            width: 45%;
+            background: linear-gradient(135deg, #2d0b1a 0%, #e60274 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 60px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .left::after {
+            content: "";
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            top: -50px;
+            right: -50px;
+        }
+
+        .left h1 {
+            font-size: 48px;
+            margin-bottom: 15px;
+            letter-spacing: 2px;
+            font-weight: 600;
+        }
+
+        .left p {
+            font-size: 18px;
+            opacity: 0.9;
+            line-height: 1.6;
+            max-width: 400px;
+        }
+
+        /* RIGHT LOGIN PANEL */
+        .right {
+            width: 55%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .box {
+            background: white;
+            padding: 50px;
+            width: 420px;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(230, 2, 116, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #2d0b1a;
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #e60274;
+            margin-bottom: 5px;
+            display: block;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px;
+            margin-bottom: 20px;
+            border: 1.5px solid #eee;
+            border-radius: 12px;
+            font-size: 14px;
+            transition: 0.3s;
+            background: #fdfdfd;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #e60274;
+            background: white;
+            box-shadow: 0 0 10px rgba(230, 2, 116, 0.1);
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            margin-top: 10px;
+            background: #2d0b1a;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.4s;
+            letter-spacing: 1px;
+        }
+
+        button:hover {
+            background: #e60274;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(230, 2, 116, 0.2);
+        }
+
+        #msg {
+            margin-top: 20px;
+            color: #e60274;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 500;
+            min-height: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="left">
+    <h1>💄 LumiGlow</h1>
+    <p>Premium Cosmetics Management</p>
+    <p>Access the core systems to refine product listings, monitor real-time orders, and manage luxury payments.</p>
+</div>
+
+<div class="right">
+    <div class="box">
+        <h2>Admin Login</h2>
+        <form id="loginForm">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" placeholder="admin@lumiglow.com" required>
+
+            <label for="password">Secure Password</label>
+            <input type="password" id="password" placeholder="••••••••" required>
+
+            <button type="submit">Access Dashboard</button>
+        </form>
+        <p id="msg"></p>
+    </div>
+</div>
+
+<script>
+document.getElementById("loginForm").addEventListener("submit", async function(e){
+    e.preventDefault();
+
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value.trim();
+    const msgElement = document.getElementById("msg");
+
+    msgElement.innerText = "Authenticating...";
+
+    try {
+        const res = await fetch("http://localhost:8080/admin/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password })
+        });
+
+        const result = await res.json();
+
+        if (result.success === true) {
+            msgElement.style.color = "green";
+            msgElement.innerText = "Login Success";
+
+            localStorage.setItem("token", result.token);
+
+            setTimeout(() => {
+                window.location.href = "dashboard.html";
+            }, 500);
+
+        } else {
+            msgElement.style.color = "red";
+            msgElement.innerText = result.message || "Invalid Admin Credentials";
+        }
+
+    } catch (err) {
+        console.error("Connection Error:", err);
+        msgElement.style.color = "red";
+        msgElement.innerText = "Server connection error";
+    }
+});
+</script>
+
+</body>
+</html>

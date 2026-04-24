@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LumiGlow | Clean Boutique Collection</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Nunito:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --pink:       #e8608a;
+            --pink-deep:  #c94070;
+            --pink-soft:  #f5a8c0;
+            --pink-pale:  #fde8ef;
+            --pink-blush: #fff0f4;
+            --dark:       #2d1a22;
+            --dark-soft:  #5a3347;
+            --white:      #ffffff;
+            --border:     rgba(232,96,138,0.18);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: var(--pink-blush);
+            color: var(--dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* HEADER */
+        header {
+            width: 100%;
+            height: 70px;
+            background: var(--white);
+            border-bottom: 2px solid var(--pink-pale);
+            position: fixed;
+            top: 0;
+            z-index: 2000;
+            transition: box-shadow 0.3s;
+        }
+
+        header.scrolled { box-shadow: 0 4px 24px rgba(232,96,138,0.12); }
+
+        .nav-container {
+            max-width: 1500px;
+            height: 100%;
+            margin: 0 auto;
+            padding: 0 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            font-weight: 600;
+            font-style: italic;
+            color: var(--pink);
+            text-decoration: none;
+            letter-spacing: 2px;
+            flex-shrink: 0;
+        }
+
+        .logo span { color: var(--dark); font-style: normal; }
+
+        .nav-menu {
+            display: flex;
+            gap: 28px;
+            align-items: center;
+        }
+
+        .nav-menu > a {
+            text-decoration: none;
+            color: var(--dark-soft);
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.8px;
+            position: relative;
+            transition: color 0.3s;
+            white-space: nowrap;
+        }
+
+        .nav-menu > a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px; left: 0;
+            width: 0; height: 2px;
+            background: var(--pink);
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+
+        .nav-menu > a:hover { color: var(--pink); }
+        .nav-menu > a:hover::after { width: 100%; }
+
+        /* SEARCH BAR IN HEADER */
+        .nav-search {
+            flex: 1;
+            max-width: 300px;
+            position: relative;
+        }
+
+        .nav-search input {
+            width: 100%;
+            padding: 9px 34px 9px 36px;
+            border: 1.5px solid var(--border);
+            border-radius: 50px;
+            background: var(--pink-blush);
+            font-family: 'Nunito', sans-serif;
+            font-size: 12px;
+            color: var(--dark);
+            outline: none;
+            transition: border-color 0.3s, box-shadow 0.3s, background 0.3s;
+        }
+
+        .nav-search input:focus {
+            border-color: var(--pink);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(232,96,138,0.1);
+        }
+
+        .nav-search input::placeholder { color: rgba(90,51,71,0.45); }
+
+        .nav-search .s-icon {
+            position: absolute;
+            left: 12px; top: 50%;
+            transform: translateY(-50%);
+            font-size: 13px;
+            pointer-events: none;
+            opacity: 0.45;
+        }
+
+        .nav-search .s-clear {
+            position: absolute;
+            right: 12px; top: 50%;
+            transform: translateY(-50%);
+            background: none; border: none;
+            cursor: pointer; font-size: 12px;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.2s;
+            padding: 0; line-height: 1;
+            color: var(--dark-soft);
+        }
+
+        .nav-search.has-text .s-clear { opacity: 0.6; pointer-events: all; }
+        .nav-search .s-clear:hover { opacity: 1; }
+
+        /* ── DROPDOWN FIX ──
+           Uses JS-controlled .open class instead of CSS :hover only.
+           A bridge pseudo-element fills the gap between button and menu
+           so the mouse can travel without the menu disappearing. */
+        .dropdown { position: relative; }
+
+        .dropdown-btn {
+            background: none; border: none; cursor: pointer;
+            font-family: 'Nunito', sans-serif;
+            font-size: 12px; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 1.8px;
+            color: var(--dark-soft);
+            display: flex; align-items: center; gap: 4px;
+            padding: 0; transition: color 0.3s;
+            white-space: nowrap;
+        }
+
+        .dropdown-btn:hover,
+        .dropdown.open .dropdown-btn { color: var(--pink); }
+
+        .dropdown-arrow { font-size: 9px; transition: transform 0.3s; display: inline-block; }
+        .dropdown.open .dropdown-arrow { transform: rotate(180deg); }
+
+        .dropdown-menu {
+            position: absolute;
+            top: calc(100% + 14px); left: 50%;
+            transform: translateX(-50%) translateY(6px);
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 8px 0;
+            min-width: 180px;
+            box-shadow: 0 12px 36px rgba(232,96,138,0.14);
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.25s ease, transform 0.25s ease;
+            z-index: 500;
+        }
+
+        /* Bridge: fills the gap between button and menu so mouse stays "inside" */
+        .dropdown-menu::before {
+            content: '';
+            position: absolute;
+            top: -16px; left: 0;
+            width: 100%; height: 16px;
+        }
+
+        .dropdown.open .dropdown-menu {
+            opacity: 1;
+            pointer-events: all;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .dropdown-menu a {
+            display: block; padding: 10px 20px;
+            font-size: 11px; color: var(--dark-soft);
+            letter-spacing: 1.4px; text-transform: uppercase;
+            font-weight: 600; text-decoration: none;
+            transition: background 0.2s, color 0.2s, padding-left 0.2s;
+            white-space: nowrap;
+        }
+
+        .dropdown-menu a:hover { background: var(--pink-pale); color: var(--pink); padding-left: 26px; }
+        .dropdown-menu a.active-cat { color: var(--pink); background: var(--pink-blush); }
+
+        /* STATUS BAR */
+        #status-bar {
+            display: none;
+            background: var(--pink-pale);
+            padding: 9px 5%;
+            font-size: 12px;
+            color: var(--dark-soft);
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 70px;
+        }
+
+        #status-bar.show { display: flex; }
+
+        .s-chip {
+            background: white;
+            border: 1px solid var(--pink-soft);
+            border-radius: 50px;
+            padding: 3px 10px;
+            font-size: 11px; font-weight: 700;
+            color: var(--pink-deep);
+            display: flex; align-items: center; gap: 5px;
+        }
+
+        .s-chip button {
+            background: none; border: none;
+            cursor: pointer; font-size: 11px;
+            color: var(--pink); padding: 0; line-height: 1; font-weight: 700;
+        }
+
+        .s-count { font-weight: 600; color: var(--dark-soft); }
+
+        /* NAV ICONS */
+        .nav-icons { display: flex; gap: 14px; align-items: center; flex-shrink: 0; }
+
+        .icon-link {
+            text-decoration: none; color: var(--dark);
+            font-size: 18px; position: relative;
+            transition: transform 0.2s;
+        }
+
+        .icon-link:hover { transform: scale(1.15); }
+
+        .badge {
+            position: absolute; top: -9px; right: -11px;
+            background: var(--pink); color: white;
+            font-size: 8px; font-weight: 700;
+            width: 16px; height: 16px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .btn-login {
+            background: var(--pink); color: white;
+            padding: 9px 18px; font-size: 11px; font-weight: 700;
+            letter-spacing: 1.5px; text-transform: uppercase;
+            border: none; border-radius: 50px; cursor: pointer;
+            font-family: 'Nunito', sans-serif; text-decoration: none;
+            display: inline-block; white-space: nowrap;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        .btn-login:hover { background: var(--pink-deep); transform: translateY(-1px); }
+
+        /* Hamburger */
+        .hamburger {
+            display: none; flex-direction: column;
+            justify-content: center; gap: 5px;
+            cursor: pointer; padding: 6px; border: none; background: transparent;
+        }
+
+        .hamburger span {
+            display: block; width: 22px; height: 2px;
+            background: var(--dark); border-radius: 2px;
+            transition: all 0.35s ease; transform-origin: center;
+        }
+
+        .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+        .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+        .mobile-menu {
+            position: fixed; top: 70px; left: 0;
+            width: 100%; height: 0;
+            background: var(--white); overflow: hidden;
+            z-index: 1999;
+            transition: height 0.4s cubic-bezier(0.4,0,0.2,1);
+            border-bottom: 2px solid var(--pink-pale);
+        }
+
+        .mobile-menu.open { height: 520px; }
+
+        .mobile-menu-inner { padding: 12px 8%; display: flex; flex-direction: column; gap: 0; }
+
+        .mob-search-wrap { padding: 4px 0 8px; position: relative; }
+
+        .mob-search-wrap input {
+            width: 100%; padding: 10px 16px 10px 36px;
+            border: 1.5px solid var(--border); border-radius: 50px;
+            background: var(--pink-blush); font-family: 'Nunito', sans-serif;
+            font-size: 13px; color: var(--dark); outline: none;
+        }
+
+        .mob-search-wrap .s-icon {
+            position: absolute; left: 12px; top: 50%;
+            transform: translateY(-50%); font-size: 14px; opacity: 0.45;
+        }
+
+        .mobile-menu a {
+            text-decoration: none; color: var(--dark-soft);
+            font-size: 13px; font-weight: 600; letter-spacing: 1px;
+            text-transform: uppercase; padding: 11px 0;
+            border-bottom: 1px solid var(--pink-pale);
+            transition: color 0.2s, padding-left 0.2s;
+        }
+
+        .mobile-menu a:hover { color: var(--pink); padding-left: 8px; }
+        .mobile-menu a:last-child { border-bottom: none; }
+
+        /* HERO */
+        .hero {
+            margin-top: 70px; width: 100%; height: 540px;
+            overflow: hidden; position: relative; background: var(--dark);
+        }
+
+        .slider { display: flex; height: 100%; transition: transform 0.9s cubic-bezier(0.77,0,0.175,1); }
+        .slide { min-width: 100%; height: 100%; position: relative; }
+
+        .slide img { width: 100%; height: 100%; object-fit: cover; opacity: 0.6; }
+
+        .hero::before {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(135deg, rgba(201,64,112,0.48) 0%, rgba(232,96,138,0.18) 50%, rgba(45,26,34,0.58) 100%);
+            z-index: 1; pointer-events: none;
+        }
+
+        .hero-overlay {
+            position: absolute; inset: 0; z-index: 2;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            text-align: center; padding: 0 20px; pointer-events: none;
+        }
+
+        .hero-pill {
+            background: rgba(255,255,255,0.18);
+            border: 1px solid rgba(255,255,255,0.38);
+            color: #fff; font-size: 10px; letter-spacing: 4px;
+            text-transform: uppercase; padding: 6px 20px;
+            border-radius: 50px; margin-bottom: 22px; font-weight: 500;
+        }
+
+        .hero-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(44px, 6vw, 82px); font-weight: 600;
+            color: #fff; line-height: 1.08; letter-spacing: 1px;
+            text-shadow: 0 2px 24px rgba(45,26,34,0.35);
+        }
+
+        .hero-title em { font-style: italic; color: var(--pink-soft); }
+
+        .hero-sub {
+            margin-top: 16px; font-size: 13px;
+            color: rgba(255,255,255,0.78); letter-spacing: 2px; font-weight: 300;
+        }
+
+        .hero-search {
+            margin-top: 28px; pointer-events: all;
+            display: flex; align-items: center;
+            background: white; border-radius: 50px;
+            padding: 6px 6px 6px 20px;
+            width: min(500px, 90vw);
+            box-shadow: 0 8px 32px rgba(45,26,34,0.25);
+            gap: 10px;
+        }
+
+        .hero-search input {
+            flex: 1; border: none; outline: none;
+            font-family: 'Nunito', sans-serif; font-size: 13px;
+            color: var(--dark); background: transparent;
+        }
+
+        .hero-search input::placeholder { color: rgba(90,51,71,0.45); }
+
+        .hero-search button {
+            background: var(--pink); color: white;
+            border: none; border-radius: 50px;
+            padding: 10px 22px; font-size: 11px; font-weight: 700;
+            letter-spacing: 1.5px; text-transform: uppercase;
+            cursor: pointer; font-family: 'Nunito', sans-serif;
+            transition: background 0.3s; white-space: nowrap; flex-shrink: 0;
+        }
+
+        .hero-search button:hover { background: var(--pink-deep); }
+
+        .hero-dots {
+            position: absolute; bottom: 22px; left: 50%;
+            transform: translateX(-50%); z-index: 3; display: flex; gap: 8px;
+        }
+
+        .dot {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: rgba(255,255,255,0.4); cursor: pointer;
+            transition: background 0.3s, transform 0.3s;
+        }
+
+        .dot.active { background: var(--pink); transform: scale(1.3); }
+
+        /* MARQUEE */
+        .strip { background: var(--pink); padding: 12px 0; overflow: hidden; white-space: nowrap; }
+        .strip-inner { display: inline-block; animation: marquee 20s linear infinite; }
+        .strip-inner span {
+            font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+            color: white; margin-right: 50px; font-weight: 600;
+        }
+        .strip-inner span::before { content: '✦'; margin-right: 18px; font-size: 8px; opacity: 0.7; }
+        @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+        /* SECTION */
+        .section-wrap {
+            max-width: 1500px; margin: 0 auto;
+            padding: 70px 5% 0;
+            display: flex; align-items: flex-end;
+            justify-content: space-between; gap: 20px;
+        }
+
+        .section-eyebrow {
+            font-size: 10px; letter-spacing: 4px;
+            text-transform: uppercase; color: var(--pink);
+            margin-bottom: 8px; font-weight: 600;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(28px, 3.5vw, 42px);
+            font-weight: 600; color: var(--dark); line-height: 1.1;
+        }
+
+        .section-rule {
+            flex: 1; height: 1.5px;
+            background: linear-gradient(to right, var(--pink-soft), transparent);
+            margin-bottom: 10px; margin-left: 28px; border-radius: 2px;
+        }
+
+        /* CAT PILLS */
+        .cat-pills {
+            max-width: 1500px; margin: 22px auto 0;
+            padding: 0 5%; display: flex; gap: 10px; flex-wrap: wrap;
+        }
+
+        .cat-pill {
+            background: var(--white); border: 1.5px solid var(--border);
+            color: var(--dark-soft); font-size: 11px; font-weight: 700;
+            letter-spacing: 1.2px; text-transform: uppercase;
+            padding: 8px 18px; border-radius: 50px; cursor: pointer;
+            text-decoration: none; transition: all 0.25s; display: inline-block;
+        }
+
+        .cat-pill:hover { background: var(--pink-pale); color: var(--pink); border-color: var(--pink-soft); }
+        .cat-pill.active { background: var(--pink); color: white; border-color: var(--pink); }
+
+        /* PRODUCT GRID */
+        .container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 32px 20px; padding: 36px 5% 100px;
+            max-width: 1500px; margin: 0 auto;
+        }
+
+        .product-card {
+            background: var(--white); border-radius: 16px;
+            overflow: hidden; border: 1px solid var(--border);
+            transition: transform 0.35s ease, box-shadow 0.35s ease;
+            animation: fadeUp 0.5s ease both; position: relative;
+        }
+
+        .product-card:hover { transform: translateY(-6px); box-shadow: 0 16px 40px rgba(232,96,138,0.15); }
+
+        .img-box {
+            width: 100%; height: 230px;
+            background: var(--pink-pale); overflow: hidden; position: relative;
+        }
+
+        .img-box img {
+            width: 100%; height: 100%; object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        .product-card:hover .img-box img { transform: scale(1.07); }
+
+        .img-badge {
+            position: absolute; top: 10px; left: 10px;
+            background: var(--pink); color: white; font-size: 8.5px;
+            font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+            padding: 4px 10px; border-radius: 50px;
+        }
+
+        .wish-btn {
+            position: absolute; top: 10px; right: 10px;
+            width: 32px; height: 32px; background: white;
+            border: none; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 15px; cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+            z-index: 2; line-height: 1;
+        }
+
+        .wish-btn:hover { transform: scale(1.2); box-shadow: 0 4px 14px rgba(232,96,138,0.25); }
+        .wish-btn.wished { background: var(--pink-pale); }
+
+        .card-body { padding: 14px 14px 16px; }
+
+        .product-title {
+            font-family: 'Playfair Display', serif; font-size: 15px;
+            font-weight: 400; color: var(--dark); height: 40px;
+            overflow: hidden; line-height: 1.35; margin-bottom: 6px;
+        }
+
+        .product-title mark {
+            background: var(--pink-pale); color: var(--pink-deep);
+            border-radius: 2px; padding: 0 2px;
+        }
+
+        .product-price { font-size: 14px; font-weight: 700; color: var(--pink); margin-bottom: 14px; display: block; }
+
+        .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+        .btn-action {
+            padding: 10px 0; font-size: 10px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 1px;
+            cursor: pointer; border-radius: 50px;
+            transition: all 0.3s; font-family: 'Nunito', sans-serif;
+        }
+
+        .btn-bag { background: var(--pink-pale); color: var(--pink-deep); border: 1.5px solid var(--pink-soft); }
+        .btn-bag:hover { background: var(--pink-soft); color: white; border-color: var(--pink-soft); }
+        .btn-buy { background: var(--pink); color: white; border: 1.5px solid var(--pink); }
+        .btn-buy:hover { background: var(--pink-deep); border-color: var(--pink-deep); }
+
+        /* Skeleton */
+        .skel-card { background: var(--white); border-radius: 16px; overflow: hidden; border: 1px solid var(--border); animation: fadeUp 0.5s ease both; }
+        .skel-img { width: 100%; height: 230px; background: linear-gradient(90deg, var(--pink-pale) 25%, #fce0e9 50%, var(--pink-pale) 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; }
+        .skel-body { padding: 14px; }
+        .skel-line { height: 11px; border-radius: 6px; background: linear-gradient(90deg, var(--pink-pale) 25%, #fce0e9 50%, var(--pink-pale) 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; margin-bottom: 10px; }
+        .skel-line.short { width: 50%; } .skel-line.med { width: 75%; }
+        @keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+
+        /* Empty state */
+        .state-box { grid-column: 1/-1; text-align: center; padding: 80px 20px; color: var(--dark-soft); }
+        .state-box .si { font-size: 52px; margin-bottom: 16px; }
+        .state-box h3 { font-family: 'Playfair Display', serif; font-size: 22px; color: var(--dark); margin-bottom: 8px; }
+        .state-box p { font-size: 13px; }
+
+        /* TOAST */
+        .toast {
+            position: fixed; bottom: 30px; left: 50%;
+            transform: translateX(-50%) translateY(80px);
+            background: var(--dark); color: white;
+            padding: 12px 26px; border-radius: 50px;
+            font-size: 13px; font-weight: 600; z-index: 9999;
+            transition: transform 0.4s cubic-bezier(0.4,0,0.2,1), opacity 0.4s;
+            opacity: 0; white-space: nowrap; box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+        }
+
+        .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+        /* FOOTER */
+        footer { background: var(--dark); padding: 50px 5%; text-align: center; }
+        .footer-logo { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 600; font-style: italic; color: var(--pink-soft); letter-spacing: 3px; margin-bottom: 14px; }
+        .footer-rule { width: 36px; height: 2px; background: var(--pink); margin: 0 auto 14px; border-radius: 2px; }
+        footer p { font-size: 10px; letter-spacing: 2.5px; color: rgba(255,255,255,0.3); text-transform: uppercase; }
+
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+
+        @media (max-width: 900px) { .nav-search { display: none; } }
+        @media (max-width: 768px) { .nav-menu { display: none; } .hamburger { display: flex; } .hero { height: 480px; } .section-rule { display: none; } .btn-login { display: none; } }
+    </style>
+</head>
+<body>
+
+<header id="siteHeader">
+    <div class="nav-container">
+        <a href="home1.html" class="logo">Lumi<span>Glow</span></a>
+
+        <nav class="nav-menu">
+            <a href="home1.html">Home</a>
+            <a href="#collection">Collection</a>
+
+            <!-- ✅ FIX: Dropdown uses JS .open class, not CSS :hover alone -->
+            <div class="dropdown" id="catDropdown">
+                <button class="dropdown-btn" id="catDropdownBtn"
+                    aria-haspopup="true" aria-expanded="false">
+                    Categories <span class="dropdown-arrow">▾</span>
+                </button>
+                <div class="dropdown-menu" id="desktopCatMenu">
+                    <a href="#" onclick="filterCat(event,'')">All Products</a>
+                    <a href="#" onclick="filterCat(event,'makeup')">💄 Makeup</a>
+                    <a href="#" onclick="filterCat(event,'skincare')">🌿 Skincare</a>
+                    <a href="#" onclick="filterCat(event,'haircare')">💆 Haircare</a>
+                    <a href="#" onclick="filterCat(event,'beauty tools')">🪞 Beauty Tools</a>
+                </div>
+            </div>
+
+            <a href="wishlist.html">Wishlist ♡</a>
+            <a href="#">About</a>
+        </nav>
+
+        <div class="nav-search" id="navSearchWrap">
+            <span class="s-icon">🔍</span>
+            <input type="text" id="navSearchInput" placeholder="Search products…"
+                autocomplete="off" oninput="onNavSearch(this)">
+            <button class="s-clear" onclick="clearSearch()" title="Clear">✕</button>
+        </div>
+
+        <div class="nav-icons">
+            <a href="wishlist.html" class="icon-link" title="Wishlist">♡ <span class="badge" id="wish-count">0</span></a>
+            <a href="cart.html" class="icon-link">🛍 <span class="badge" id="cart-count">0</span></a>
+            <a href="user-profile.html" class="icon-link">👤</a>
+            <a href="register.html" class="btn-login" style="background:var(--dark-soft);margin-right:4px">Register</a>
+            <a href="user-login.html" class="btn-login">Login</a>
+            <button class="hamburger" id="hamburger" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </div>
+</header>
+
+<div id="status-bar"></div>
+
+<div class="mobile-menu" id="mobileMenu">
+    <div class="mobile-menu-inner">
+        <div class="mob-search-wrap">
+            <span class="s-icon">🔍</span>
+            <input type="text" id="mobSearchInput" placeholder="Search products…"
+                autocomplete="off" oninput="onMobSearch(this)">
+        </div>
+        <a href="home1.html" onclick="closeMenu()">🏠 Home</a>
+        <a href="#collection" onclick="closeMenu()">💄 Collection</a>
+        <a href="wishlist.html" onclick="closeMenu()">♡ Wishlist</a>
+        <a href="#" onclick="filterCat(event,'');closeMenu()">🗂️ All Products</a>
+        <a href="#" onclick="filterCat(event,'makeup');closeMenu()">💄 Makeup</a>
+        <a href="#" onclick="filterCat(event,'skincare');closeMenu()">🌿 Skincare</a>
+        <a href="#" onclick="filterCat(event,'haircare');closeMenu()">💆 Haircare</a>
+        <a href="#" onclick="filterCat(event,'beauty tools');closeMenu()">🪞 Beauty Tools</a>
+        <a href="#" onclick="closeMenu()">💛 About</a>
+        <a href="register.html" onclick="closeMenu()">📝 Register</a>
+        <a href="user-login.html" onclick="closeMenu()">🔑 Login</a>
+    </div>
+</div>
+
+<div class="hero" id="heroSection">
+    <div class="slider" id="heroSlider">
+        <div class="slide"><img src="https://images.pexels.com/photos/3373746/pexels-photo-3373746.jpeg" alt="Glow"></div>
+        <div class="slide"><img src="https://images.pexels.com/photos/2533266/pexels-photo-2533266.jpeg" alt="Beauty"></div>
+    </div>
+    <div class="hero-overlay">
+        <div class="hero-pill">New Season · 2026</div>
+        <h1 class="hero-title">Glow is Your<br><em>Superpower</em></h1>
+        <p class="hero-sub">Clean Beauty · Curated for Radiance</p>
+        <div class="hero-search">
+            <input type="text" id="heroSearchInput" placeholder="Search lipstick, serum, hair mask…" autocomplete="off">
+            <button onclick="doHeroSearch()">Search</button>
+        </div>
+    </div>
+    <div class="hero-dots">
+        <div class="dot active" onclick="goToSlide(0)"></div>
+        <div class="dot" onclick="goToSlide(1)"></div>
+    </div>
+</div>
+
+<div class="strip">
+    <div class="strip-inner">
+        <span>Free Shipping ₹999+</span><span>Clean Beauty</span><span>Cruelty Free</span>
+        <span>Dermatologist Tested</span><span>New Arrivals Weekly</span>
+        <span>Free Shipping ₹999+</span><span>Clean Beauty</span><span>Cruelty Free</span>
+        <span>Dermatologist Tested</span><span>New Arrivals Weekly</span>
+    </div>
+</div>
+
+<div class="section-wrap" id="collection">
+    <div>
+        <p class="section-eyebrow">Handpicked for You</p>
+        <h2 class="section-title" id="sectionTitle">Our Collection</h2>
+    </div>
+    <div class="section-rule"></div>
+</div>
+
+<div class="cat-pills">
+    <a href="#" class="cat-pill active" data-cat="" onclick="filterCat(event,'')">All</a>
+    <a href="#" class="cat-pill" data-cat="makeup" onclick="filterCat(event,'makeup')">💄 Makeup</a>
+    <a href="#" class="cat-pill" data-cat="skincare" onclick="filterCat(event,'skincare')">🌿 Skincare</a>
+    <a href="#" class="cat-pill" data-cat="haircare" onclick="filterCat(event,'haircare')">💆 Haircare</a>
+    <a href="#" class="cat-pill" data-cat="beauty tools" onclick="filterCat(event,'beauty tools')">🪞 Beauty Tools</a>
+</div>
+
+<div class="container" id="productGrid"></div>
+
+<footer>
+    <div class="footer-logo">LumiGlow</div>
+    <div class="footer-rule"></div>
+    <p>© 2026 LumiGlow &nbsp;·&nbsp; The Art of Radiance</p>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ── DEMO PRODUCTS (shown when backend is offline) ── */
+const DEMO_PRODUCTS = [
+    { id:1,  name:"Velvet Matte Lipstick",      category:"makeup",        price:499,  image:"https://images.pexels.com/photos/2533266/pexels-photo-2533266.jpeg" },
+    { id:2,  name:"Glow Serum 30ml",            category:"skincare",      price:899,  image:"https://images.pexels.com/photos/3373746/pexels-photo-3373746.jpeg" },
+    { id:3,  name:"Rose Gold Highlighter",      category:"makeup",        price:649,  image:"https://images.pexels.com/photos/2697787/pexels-photo-2697787.jpeg" },
+    { id:4,  name:"Argan Oil Hair Mask",        category:"haircare",      price:749,  image:"https://images.pexels.com/photos/3985338/pexels-photo-3985338.jpeg" },
+    { id:5,  name:"Jade Facial Roller",         category:"beauty tools",  price:599,  image:"https://images.pexels.com/photos/4041392/pexels-photo-4041392.jpeg" },
+    { id:6,  name:"Hydrating Face Moisturizer", category:"skincare",      price:799,  image:"https://images.pexels.com/photos/3735657/pexels-photo-3735657.jpeg" },
+    { id:7,  name:"Nude Lip Gloss Set",         category:"makeup",        price:399,  image:"https://images.pexels.com/photos/2533266/pexels-photo-2533266.jpeg" },
+    { id:8,  name:"Keratin Repair Shampoo",     category:"haircare",      price:549,  image:"https://images.pexels.com/photos/3785147/pexels-photo-3785147.jpeg" },
+    { id:9,  name:"Vitamin C Eye Cream",        category:"skincare",      price:1099, image:"https://images.pexels.com/photos/3373746/pexels-photo-3373746.jpeg" },
+    { id:10, name:"Eyelash Curler Pro",         category:"beauty tools",  price:349,  image:"https://images.pexels.com/photos/4041392/pexels-photo-4041392.jpeg" },
+    { id:11, name:"Contour & Blush Palette",    category:"makeup",        price:849,  image:"https://images.pexels.com/photos/2697787/pexels-photo-2697787.jpeg" },
+    { id:12, name:"Scalp Nourishing Oil",       category:"haircare",      price:449,  image:"https://images.pexels.com/photos/3985338/pexels-photo-3985338.jpeg" },
+];
+
+/* ── STATE ── */
+let allProducts     = [];
+let currentCategory = '';
+let searchQuery     = '';
+let searchTimer     = null;
+
+/* ── TOAST ── */
+function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2400);
+}
+
+/* ── SEARCH ── */
+function onNavSearch(input) {
+    document.getElementById('navSearchWrap').classList.toggle('has-text', input.value.length > 0);
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(() => {
+        searchQuery = input.value.trim();
+        syncSearchInputs(searchQuery);
+        renderProducts();
+        updateStatusBar();
+        if (searchQuery) scrollToCollection();
+    }, 260);
+}
+
+function onMobSearch(input) {
+    searchQuery = input.value.trim();
+    syncSearchInputs(searchQuery);
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(() => { renderProducts(); updateStatusBar(); }, 260);
+}
+
+function doHeroSearch() {
+    searchQuery = document.getElementById('heroSearchInput').value.trim();
+    syncSearchInputs(searchQuery);
+    renderProducts();
+    updateStatusBar();
+    scrollToCollection();
+}
+
+function clearSearch() {
+    searchQuery = '';
+    syncSearchInputs('');
+    renderProducts();
+    updateStatusBar();
+}
+
+function syncSearchInputs(val) {
+    document.getElementById('navSearchInput').value  = val;
+    document.getElementById('heroSearchInput').value = val;
+    document.getElementById('mobSearchInput').value  = val;
+    document.getElementById('navSearchWrap').classList.toggle('has-text', val.length > 0);
+}
+
+document.getElementById('heroSearchInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') doHeroSearch();
+});
+
+document.getElementById('navSearchInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+        searchQuery = e.target.value.trim();
+        syncSearchInputs(searchQuery);
+        renderProducts();
+        updateStatusBar();
+        scrollToCollection();
+    }
+});
+
+function scrollToCollection() {
+    document.getElementById('collection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+/* ── CATEGORY FILTER ── */
+// ✅ FIX: All category values normalized to lowercase to match DB values
+function filterCat(e, cat) {
+    if (e) e.preventDefault();
+    currentCategory = cat ? cat.trim().toLowerCase() : '';
+    searchQuery = '';
+    syncSearchInputs('');
+    renderProducts();
+    updateStatusBar();
+    updateCatUI();
+    scrollToCollection();
+    // Close dropdown after selecting
+    document.getElementById('catDropdown').classList.remove('open');
+    document.getElementById('catDropdownBtn').setAttribute('aria-expanded', 'false');
+}
+
+/* ── STATUS BAR ── */
+function updateStatusBar() {
+    const bar = document.getElementById('status-bar');
+    const filtered = getFiltered();
+    const displayCat = currentCategory
+        ? currentCategory.charAt(0).toUpperCase() + currentCategory.slice(1)
+        : '';
+    let html = '';
+
+    if (currentCategory) html += `<div class="s-chip">📂 ${displayCat} <button onclick="filterCat(null,'')">✕</button></div>`;
+    if (searchQuery)     html += `<div class="s-chip">🔍 "${searchQuery}" <button onclick="clearSearch()">✕</button></div>`;
+    if (currentCategory || searchQuery) html += `<span class="s-count">${filtered.length} product${filtered.length !== 1 ? 's' : ''} found</span>`;
+
+    bar.innerHTML = html;
+    bar.classList.toggle('show', !!(currentCategory || searchQuery));
+}
+
+/* ── CAT UI ── */
+function updateCatUI() {
+    const displayCat = currentCategory
+        ? currentCategory.charAt(0).toUpperCase() + currentCategory.slice(1)
+        : '';
+    document.getElementById('sectionTitle').innerText =
+        currentCategory ? displayCat + ' Collection' : 'Our Collection';
+    document.querySelectorAll('.cat-pill').forEach(p =>
+        p.classList.toggle('active', p.dataset.cat === currentCategory)
+    );
+    document.querySelectorAll('#desktopCatMenu a').forEach(a => {
+        const text = a.textContent.toLowerCase();
+        a.classList.toggle('active-cat', currentCategory && text.includes(currentCategory));
+    });
+}
+
+/* ── FILTER LOGIC ──
+   ✅ FIX: Compare lowercase on both sides to handle DB returning "makeup"
+   and UI passing "makeup", "Makeup", etc. */
+function getFiltered() {
+    let list = allProducts;
+    if (currentCategory) {
+        list = list.filter(p =>
+            p.category && p.category.trim().toLowerCase() === currentCategory.toLowerCase()
+        );
+    }
+    if (searchQuery) {
+        const q = searchQuery.toLowerCase();
+        list = list.filter(p =>
+            (p.name && p.name.toLowerCase().includes(q)) ||
+            (p.category && p.category.toLowerCase().includes(q))
+        );
+    }
+    return list;
+}
+
+/* ── HIGHLIGHT ── */
+function highlight(text, query) {
+    if (!query) return text;
+    const esc = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return text.replace(new RegExp(`(${esc})`, 'gi'), '<mark>$1</mark>');
+}
+
+/* ── RENDER ── */
+function renderProducts() {
+    const grid     = document.getElementById('productGrid');
+    const filtered = getFiltered();
+    const wishlist = getWishlist();
+
+    if (filtered.length === 0) {
+        grid.innerHTML = `<div class="state-box"><div class="si">🔍</div><h3>No products found</h3><p>Try a different search or browse all categories.</p></div>`;
+        return;
+    }
+
+    let html = '';
+    filtered.forEach((p, i) => {
+        const safe     = (p.name || '').replace(/'/g, "\\'");
+        const isWished = wishlist.some(w => w.id === p.id);
+        const title    = highlight(p.name, searchQuery);
+        html += `
+            <div class="product-card" style="animation-delay:${i * 0.05}s">
+                <div class="img-box">
+                    <img src="${p.image}" alt="${p.name}" loading="lazy"
+                        onerror="this.src='https://images.pexels.com/photos/3373746/pexels-photo-3373746.jpeg'">
+                    <span class="img-badge">New</span>
+                    <button class="wish-btn ${isWished ? 'wished' : ''}" id="wish-${p.id}"
+                        onclick="toggleWish(${p.id},'${safe}',${p.price},'${p.image||''}')"
+                        title="${isWished ? 'Remove' : 'Add to Wishlist'}">${isWished ? '❤️' : '🤍'}</button>
+                </div>
+                <div class="card-body">
+                    <h3 class="product-title">${title}</h3>
+                    <span class="product-price">₹${p.price}</span>
+                    <div class="btn-group">
+                        <button class="btn-action btn-bag" onclick="addToBag(${p.id},'${safe}',${p.price})">Add to Bag</button>
+                        <button class="btn-action btn-buy" onclick="buyNow(${p.id})">Buy Now</button>
+                    </div>
+                </div>
+            </div>`;
+    });
+
+    grid.innerHTML = html;
+}
+
+/* ── SKELETON ── */
+function showSkeleton() {
+    let h = '';
+    for (let i = 0; i < 8; i++) h += `<div class="skel-card" style="animation-delay:${i*0.05}s"><div class="skel-img"></div><div class="skel-body"><div class="skel-line med"></div><div class="skel-line short"></div></div></div>`;
+    document.getElementById('productGrid').innerHTML = h;
+}
+
+/* ── LOAD PRODUCTS ──
+   ✅ FIX: Backend products' categories are normalized to lowercase
+   after fetching so the filter always matches correctly. */
+async function loadCollection() {
+    showSkeleton();
+    try {
+        const ctrl = new AbortController();
+        const t    = setTimeout(() => ctrl.abort(), 3000);
+        const res  = await fetch('http://localhost:8080/products', { signal: ctrl.signal });
+        clearTimeout(t);
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const raw = await res.json();
+        // Normalize category to lowercase so filter always works
+        allProducts = raw.map(p => ({ ...p, category: (p.category || '').trim().toLowerCase() }));
+    } catch (err) {
+        console.warn('Backend unavailable — showing demo products.');
+        allProducts = DEMO_PRODUCTS;
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    currentCategory = params.get('category') ? params.get('category').trim().toLowerCase() : '';
+    updateCatUI();
+    renderProducts();
+    updateStatusBar();
+}
+
+/* ── WISHLIST ── */
+function getWishlist() { return JSON.parse(localStorage.getItem('wishlist')) || []; }
+function saveWishlist(l) { localStorage.setItem('wishlist', JSON.stringify(l)); document.getElementById('wish-count').innerText = l.length; }
+
+function toggleWish(id, name, price, image) {
+    let list = getWishlist();
+    const idx = list.findIndex(w => w.id === id);
+    const btn = document.getElementById('wish-' + id);
+    if (idx === -1) {
+        list.push({ id, name, price, image });
+        saveWishlist(list);
+        if (btn) { btn.textContent = '❤️'; btn.classList.add('wished'); }
+        showToast('❤️ Added to Wishlist: ' + name);
+    } else {
+        list.splice(idx, 1);
+        saveWishlist(list);
+        if (btn) { btn.textContent = '🤍'; btn.classList.remove('wished'); }
+        showToast('🤍 Removed from Wishlist');
+    }
+}
+
+/* ── CART ── */
+function addToBag(id, name, price) {
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    cart.push({ id, name, price });
+    localStorage.setItem('cart', JSON.stringify(cart));
+    document.getElementById('cart-count').innerText = cart.length;
+    showToast('🛍 Added to Bag: ' + name);
+}
+
+function buyNow(id) {
+    if (!localStorage.getItem('email')) { window.location.href = 'user-login.html'; }
+    else { window.location.href = 'user-order.html?id=' + id; }
+}
+
+/* ── SLIDER ── */
+let curIdx = 0;
+const dots = document.querySelectorAll('.dot');
+function goToSlide(i) {
+    curIdx = i;
+    document.getElementById('heroSlider').style.transform = `translateX(-${i*100}%)`;
+    dots.forEach((d,j) => d.classList.toggle('active', j===i));
+}
+setInterval(() => goToSlide((curIdx+1)%2), 5000);
+
+/* ── DROPDOWN: JS-controlled open/close ──
+   ✅ FIX: Button toggles .open class. Clicking outside closes it.
+   The CSS bridge (::before) covers the gap so the menu stays open
+   while the mouse travels from button to menu items. */
+const catDropdown    = document.getElementById('catDropdown');
+const catDropdownBtn = document.getElementById('catDropdownBtn');
+
+catDropdownBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const isOpen = catDropdown.classList.toggle('open');
+    catDropdownBtn.setAttribute('aria-expanded', isOpen);
+});
+
+// Keep open while mouse is inside the dropdown area
+catDropdown.addEventListener('mouseleave', () => {
+    catDropdown.classList.remove('open');
+    catDropdownBtn.setAttribute('aria-expanded', 'false');
+});
+
+// Close on outside click
+document.addEventListener('click', (e) => {
+    if (!catDropdown.contains(e.target)) {
+        catDropdown.classList.remove('open');
+        catDropdownBtn.setAttribute('aria-expanded', 'false');
+    }
+});
+
+/* ── MISC ── */
+window.addEventListener('scroll', () =>
+    document.getElementById('siteHeader').classList.toggle('scrolled', window.scrollY > 10)
+);
+
+const hamburger  = document.getElementById('hamburger');
+const mobileMenu = document.getElementById('mobileMenu');
+hamburger.addEventListener('click', () => {
+    hamburger.classList.toggle('open');
+    mobileMenu.classList.toggle('open');
+});
+function closeMenu() { hamburger.classList.remove('open'); mobileMenu.classList.remove('open'); }
+document.addEventListener('click', e => {
+    if (!hamburger.contains(e.target) && !mobileMenu.contains(e.target)) closeMenu();
+});
+
+window.addEventListener('popstate', () => {
+    const params = new URLSearchParams(window.location.search);
+    currentCategory = params.get('category') ? params.get('category').trim().toLowerCase() : '';
+    updateCatUI(); renderProducts(); updateStatusBar();
+});
+
+/* ── INIT ── */
+loadCollection();
+document.getElementById('cart-count').innerText  = (JSON.parse(localStorage.getItem('cart')) || []).length;
+document.getElementById('wish-count').innerText  = (JSON.parse(localStorage.getItem('wishlist')) || []).length;
+</script>
+</body>
+</html>

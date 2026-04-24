@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>LumiGlow | Customer Profile</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --sidebar-pink: #2d0b1a;
+            --accent-pink: #ff2d8d;
+            --light-pink: #fff0f6;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            display: flex;
+            background-color: #fdf2f7;
+            min-height: 100vh;
+        }
+
+        /* --- FIXED SIDEBAR MENU --- */
+        .sidebar {
+            width: 250px;
+            height: 100vh;
+            background: var(--sidebar-pink);
+            color: white;
+            position: fixed;
+            padding-top: 20px;
+            z-index: 1000;
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            font-size: 20px;
+            color: var(--accent-pink);
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        .sidebar a {
+            display: block;
+            color: white;
+            padding: 15px 25px;
+            text-decoration: none;
+            transition: 0.3s;
+            border-left: 4px solid transparent;
+            font-size: 14px;
+        }
+
+        .sidebar a:hover, .sidebar a.active {
+            background: rgba(255, 45, 141, 0.1);
+            border-left: 4px solid var(--accent-pink);
+            color: var(--accent-pink);
+        }
+
+        /* --- MAIN CONTENT AREA --- */
+        .main-content {
+            margin-left: 250px; /* Same as sidebar width */
+            padding: 40px;
+            width: calc(100% - 250px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .top-bar {
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .btn-back {
+            background: var(--white);
+            color: var(--sidebar-pink);
+            padding: 8px 20px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 13px;
+            border: 1px solid #ffc2df;
+            transition: 0.3s;
+        }
+
+        .btn-back:hover {
+            background: var(--accent-pink);
+            color: white;
+            border-color: var(--accent-pink);
+        }
+
+        /* --- CUSTOMER INFO BOX --- */
+        .info-box {
+            width: 100%;
+            max-width: 450px;
+            background: var(--white);
+            padding: 40px;
+            border-radius: 25px;
+            box-shadow: 0 15px 35px rgba(233,30,99,0.1);
+            border: 1px solid #ffc2df;
+            position: relative;
+        }
+
+        .info-box h2 {
+            color: #e91e63;
+            margin-top: 0;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 24px;
+        }
+
+        .info-item {
+            margin: 15px 0;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #fff0f5;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .info-item b {
+            color: #ad1457;
+            font-weight: 600;
+        }
+
+        .info-item span {
+            color: #444;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <h2>LumiGlow Admin</h2>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="product-list.html">Products</a>
+        <a href="category-management.html">Categories</a>
+        <a href="order-details.html">Orders</a>
+        <a href="customer-details.html" class="active">Customers</a>
+        <a href="admin.html">Logout</a>
+    </div>
+
+    <div class="main-content">
+        <div class="top-bar">
+            <h1 style="color: var(--sidebar-pink); margin: 0; font-size: 28px;">Customer Profile</h1>
+            <a href="customer-management.html" class="btn-back">← Back to List</a>
+        </div>
+
+        <div class="info-box">
+            <h2>User Information</h2>
+            
+            <div class="info-item">
+                <b>Name:</b> <span id="name">Loading...</span>
+            </div>
+            
+            <div class="info-item">
+                <b>Email:</b> <span id="email">Loading...</span>
+            </div>
+            
+            <div class="info-item">
+                <b>Phone:</b> <span id="phone">Loading...</span>
+            </div>
+            
+            <div class="info-item">
+                <b>Address:</b> <span id="address">Loading...</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get ID from the browser URL bar
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get("id");
+
+        async function loadCustomer() {
+            if(!id) {
+                alert("No Customer Selected!");
+                window.location.href = "customer-management.html";
+                return;
+            }
+
+            try {
+                // Connecting to your local node server
+                const res = await fetch(`http://localhost:3000/customer/${id}`);
+                
+                if(!res.ok) throw new Error("Customer not found");
+                
+                const c = await res.json();
+
+                document.getElementById("name").innerText = c.name || "N/A";
+                document.getElementById("email").innerText = c.email || "N/A";
+                document.getElementById("phone").innerText = c.phone || "N/A";
+                document.getElementById("address").innerText = c.address || "N/A";
+
+            } catch(err) {
+                console.error("Fetch Error:", err);
+                document.getElementById("name").innerText = "Error loading data";
+            }
+        }
+
+        loadCustomer();
+    </script>
+</body>
+</html>

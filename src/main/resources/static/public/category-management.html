@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Categories | LumiGlow</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root { --blush:#fce8f3;--petal:#f9d0e8;--rose:#e8147a;--deep-rose:#b50060;--velvet:#7a0040;--cream:#fffaf8;--silk:#fff5fa;--ink:#2a0015;--muted:#a0607a;--glow:rgba(232,20,122,0.15);--card-shadow:0 8px 40px rgba(180,0,80,0.10); }
+        * { margin:0;padding:0;box-sizing:border-box; }
+        body { font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);min-height:100vh;display:flex;overflow-x:hidden; }
+        body::before { content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 60% at 10% 0%,rgba(252,232,243,0.9) 0%,transparent 60%),radial-gradient(ellipse 60% 50% at 90% 100%,rgba(249,208,232,0.6) 0%,transparent 55%),radial-gradient(ellipse 40% 40% at 50% 50%,rgba(255,245,250,0.8) 0%,transparent 70%);pointer-events:none;z-index:0; }
+        .sidebar { width:270px;min-height:100vh;position:fixed;top:0;left:0;bottom:0;background:linear-gradient(175deg,#fff0f8 0%,#ffe4f2 60%,#ffd6ec 100%);border-right:1px solid rgba(232,20,122,0.10);display:flex;flex-direction:column;z-index:100;box-shadow:4px 0 40px rgba(180,0,80,0.06); }
+        .sidebar::before { content:'';position:absolute;top:-80px;left:-80px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(232,20,122,0.08),transparent 70%);pointer-events:none; }
+        .sidebar::after { content:'';position:absolute;bottom:-60px;right:-60px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(181,0,96,0.07),transparent 70%);pointer-events:none; }
+        .logo-box { padding:44px 32px 28px;position:relative; }
+        .logo-eyebrow { font-size:9px;letter-spacing:4px;text-transform:uppercase;color:var(--muted);font-weight:500;margin-bottom:6px; }
+        .logo-box h2 { font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:300;color:var(--rose);letter-spacing:3px;line-height:1; }
+        .logo-box h2 em { font-style:italic;font-weight:600; }
+        .logo-divider { width:40px;height:1.5px;background:linear-gradient(90deg,var(--rose),transparent);margin-top:16px; }
+        .nav-section-label { padding:0 32px;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);font-weight:500;margin:20px 0 10px;opacity:0.7; }
+        nav { padding:0 18px;flex:1; }
+        nav a { display:flex;align-items:center;gap:14px;padding:13px 18px;text-decoration:none;color:var(--velvet);font-size:12.5px;font-weight:500;margin-bottom:3px;border-radius:14px;transition:all 0.25s cubic-bezier(0.4,0,0.2,1);letter-spacing:0.3px;position:relative;overflow:hidden;cursor:pointer; }
+        nav a::before { content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(232,20,122,0.10),rgba(232,20,122,0.04));opacity:0;border-radius:inherit;transition:opacity 0.25s; }
+        nav a:hover::before { opacity:1; }
+        nav a:hover { color:var(--rose);transform:translateX(4px); }
+        nav a.active { background:linear-gradient(90deg,rgba(232,20,122,0.13),rgba(232,20,122,0.05));color:var(--rose); }
+        .nav-icon { width:32px;height:32px;background:white;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:14px;box-shadow:0 2px 8px rgba(180,0,80,0.08);transition:transform 0.25s;flex-shrink:0; }
+        nav a:hover .nav-icon, nav a.active .nav-icon { background:var(--rose);box-shadow:0 4px 14px rgba(232,20,122,0.3); }
+        .sidebar-footer { padding:24px 36px 32px;border-top:1px solid rgba(232,20,122,0.08); }
+        .sidebar-footer a { display:flex;align-items:center;gap:8px;font-size:11.5px;font-weight:500;color:var(--muted);text-decoration:none;letter-spacing:0.5px;transition:color 0.2s;cursor:pointer; }
+        .sidebar-footer a:hover { color:var(--rose); }
+        .top-action-bar { display:flex;justify-content:flex-end;gap:10px;margin-bottom:24px; }
+        .btn-dashboard { display:inline-flex;align-items:center;gap:8px;background:white;border:1.5px solid rgba(232,20,122,0.20);color:var(--velvet);padding:10px 20px;border-radius:50px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer;letter-spacing:0.4px;box-shadow:var(--card-shadow);transition:all 0.25s; }
+        .btn-dashboard:hover { background:var(--blush);border-color:var(--rose);color:var(--rose);transform:translateY(-1px); }
+        .btn-close { display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--rose),var(--deep-rose));color:white;border:none;padding:10px 20px;border-radius:50px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer;letter-spacing:0.4px;box-shadow:0 4px 16px rgba(232,20,122,0.30);transition:all 0.25s; }
+        .btn-close:hover { transform:translateY(-1px);box-shadow:0 6px 22px rgba(232,20,122,0.42); }
+        .content { margin-left:270px;padding:48px 48px 48px 44px;flex:1;position:relative;z-index:1; }
+        .page-header { display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:40px; }
+        .page-header-left .greeting { font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);font-weight:500;margin-bottom:8px; }
+        .page-header-left h1 { font-family:'Cormorant Garamond',serif;font-size:44px;font-weight:300;line-height:1.1;letter-spacing:1px; }
+        .page-header-left h1 em { font-style:italic;color:var(--rose);font-weight:600; }
+        .form-card { background:white;border-radius:24px;padding:32px 36px;border:1px solid rgba(232,20,122,0.07);box-shadow:var(--card-shadow);margin-bottom:32px;animation:fadeUp 0.4s ease both; }
+        .form-card-title { font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;letter-spacing:0.5px;margin-bottom:24px; }
+        .form-card-title em { font-style:italic;color:var(--rose); }
+        .form-grid { display:grid;grid-template-columns:1fr 1fr auto;gap:16px;align-items:end; }
+        .input-group { display:flex;flex-direction:column; }
+        .input-group label { font-size:9.5px;text-transform:uppercase;letter-spacing:2px;color:var(--muted);font-weight:500;margin-bottom:10px; }
+        .input-group input { padding:14px 18px;border:1.5px solid rgba(232,20,122,0.12);border-radius:14px;background:var(--silk);font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink);transition:all 0.25s;outline:none; }
+        .input-group input:focus { border-color:var(--rose);background:white;box-shadow:0 0 0 4px rgba(232,20,122,0.07); }
+        .input-group input::placeholder { color:#c9a0b4; }
+        .btn-save { padding:14px 28px;background:linear-gradient(135deg,var(--rose),var(--deep-rose));color:white;border:none;border-radius:14px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;font-size:12.5px;letter-spacing:0.5px;display:flex;align-items:center;gap:8px;white-space:nowrap;transition:all 0.25s;box-shadow:0 4px 20px rgba(232,20,122,0.3); }
+        .btn-save:hover { transform:translateY(-2px);box-shadow:0 8px 28px rgba(232,20,122,0.4); }
+        .section-label { font-size:9.5px;text-transform:uppercase;letter-spacing:3px;color:var(--muted);font-weight:500;margin-bottom:18px; }
+        .category-grid { display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:22px; }
+        .cat-card { background:white;border-radius:24px;padding:28px;border:1px solid rgba(232,20,122,0.07);box-shadow:var(--card-shadow);position:relative;overflow:hidden;transition:all 0.35s cubic-bezier(0.4,0,0.2,1);display:flex;flex-direction:column;animation:fadeUp 0.5s ease both; }
+        .cat-card::before { content:'';position:absolute;top:0;left:0;width:4px;height:100%;background:linear-gradient(180deg,var(--rose),var(--deep-rose));border-radius:4px 0 0 4px; }
+        .cat-card::after { content:'';position:absolute;top:-40px;right:-40px;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,rgba(249,208,232,0.4),transparent 70%);transition:transform 0.4s; }
+        .cat-card:hover { transform:translateY(-8px);box-shadow:0 24px 60px rgba(180,0,80,0.16);border-color:rgba(232,20,122,0.18); }
+        .cat-card:hover::after { transform:scale(1.4); }
+        .product-badge { position:absolute;top:22px;right:22px;background:var(--blush);color:var(--deep-rose);padding:5px 12px;border-radius:20px;font-size:10px;font-weight:600;letter-spacing:0.5px;z-index:1; }
+        .cat-card h3 { font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:400;color:var(--ink);margin:0 0 8px 10px;letter-spacing:0.3px; }
+        .cat-card > p { font-size:12.5px;color:var(--muted);line-height:1.6;margin:0 0 0 10px; }
+        .products-list-container { margin-top:18px;padding-top:18px;border-top:1px dashed rgba(232,20,122,0.15);flex-grow:1; }
+        .products-list-container h4 { font-size:8.5px;text-transform:uppercase;letter-spacing:2px;color:#cba0ba;margin:0 0 12px 0; }
+        .mini-product-item { display:flex;align-items:center;gap:8px;font-size:12px;color:var(--velvet);margin-bottom:8px; }
+        .mini-product-item i { width:6px;height:6px;background:var(--rose);border-radius:50%;flex-shrink:0; }
+        .mini-product-price { color:#cba0ba;font-size:11px;margin-left:auto; }
+        .no-products-text { font-size:11.5px;color:#cba0ba;font-style:italic; }
+        .card-actions { margin-top:20px;display:flex;gap:10px; }
+        .btn-sm { padding:9px 18px;font-size:11px;border-radius:10px;border:none;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:'DM Sans',sans-serif;font-weight:600;letter-spacing:0.3px;transition:all 0.25s; }
+        .edit-btn { background:#fff3e0;color:#ef6c00; }
+        .edit-btn:hover { background:#ffe0b2;transform:translateY(-1px); }
+        .delete-btn { background:#ffebee;color:#c62828; }
+        .delete-btn:hover { background:#ffcdd2;transform:translateY(-1px); }
+        .state-msg { text-align:center;padding:60px 40px;color:var(--muted);font-size:13px;grid-column:1/-1; }
+        .state-msg .state-icon { font-size:2.5rem;display:block;margin-bottom:14px;opacity:0.35; }
+        @keyframes fadeUp { from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);} }
+        @media(max-width:900px){.sidebar{width:70px;}.sidebar .nav-text,.logo-box h2,.logo-eyebrow,.logo-divider,.nav-section-label,.sidebar-footer span{display:none;}.content{margin-left:70px;padding:28px;}nav a{justify-content:center;padding:12px;}}
+        @media(max-width:700px){.form-grid{grid-template-columns:1fr;}.page-header{flex-direction:column;gap:16px;}}
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="logo-box">
+            <p class="logo-eyebrow">Luxe Admin Panel</p>
+            <h2><em>Lumi</em>Glow</h2>
+            <div class="logo-divider"></div>
+        </div>
+        <p class="nav-section-label">Catalog</p>
+        <nav>
+            <a onclick="goAdd()"><span class="nav-icon">✦</span><span class="nav-text">Add Product</span></a>
+            <a onclick="goView()"><span class="nav-icon">🌸</span><span class="nav-text">View Store</span></a>
+            <a onclick="goProductList()"><span class="nav-icon">📦</span><span class="nav-text">Product List</span></a>
+            <a class="active" onclick="goCategory()"><span class="nav-icon">🗂</span><span class="nav-text">Categories</span></a>
+        </nav>
+        <p class="nav-section-label">Commerce</p>
+        <nav>
+            <a onclick="goOrders()"><span class="nav-icon">🛒</span><span class="nav-text">Orders</span></a>
+            <a onclick="goCustomers()"><span class="nav-icon">👥</span><span class="nav-text">Customers</span></a>
+            <a onclick="goPayments()"><span class="nav-icon">💳</span><span class="nav-text">Payments</span></a>
+        </nav>
+        <div class="sidebar-footer">
+            <a onclick="logout()"><span style="font-size:14px;">⟵</span><span class="nav-text">Sign Out</span></a>
+        </div>
+    </aside>
+
+    <main class="content">
+        <div class="top-action-bar">
+            <button class="btn-dashboard" onclick="goDashboard()">🏠 &nbsp;Dashboard</button>
+            <button class="btn-close" onclick="closePage()">✕ &nbsp;Close</button>
+        </div>
+
+        <div class="page-header">
+            <div class="page-header-left">
+                <p class="greeting">Catalog Management</p>
+                <h1>Manage <em>Categories</em></h1>
+            </div>
+        </div>
+
+        <div class="form-card">
+            <h3 class="form-card-title">Add <em>New Category</em></h3>
+            <div class="form-grid">
+                <div class="input-group">
+                    <label>Category Name</label>
+                    <input type="text" id="name" placeholder="e.g. Lipsticks">
+                </div>
+                <div class="input-group">
+                    <label>Brief Description</label>
+                    <input type="text" id="description" placeholder="e.g. Organic matte finishes">
+                </div>
+                <button class="btn-save" onclick="handleFormSubmit()">
+                    <span>✦</span><span id="btnText">Save Category</span>
+                </button>
+            </div>
+        </div>
+
+        <p class="section-label">All Categories</p>
+        <div id="categoryList" class="category-grid">
+            <div class="state-msg"><span class="state-icon">🌸</span>Loading categories…</div>
+        </div>
+    </main>
+
+<script>
+    let editId = null;
+
+    // ✅ FIXED: Must match your CategoryController @RequestMapping exactly
+    const API_URL = "http://localhost:8080/api/categories";
+
+    async function loadCategories() {
+        const list = document.getElementById("categoryList");
+        try {
+            const res = await fetch(API_URL, {
+                method: "GET",
+                headers: {
+                    "Accept": "application/json"
+                }
+            });
+            if (!res.ok) throw new Error(`Server responded with ${res.status}`);
+            const data = await res.json();
+
+            if (data.length === 0) {
+                list.innerHTML = `<div class="state-msg"><span class="state-icon">🗂</span>No categories yet. Add your first one above!</div>`;
+                return;
+            }
+
+            window._categoryMap = {};
+            data.forEach(c => { window._categoryMap[c.id] = c; });
+
+            list.innerHTML = data.map((c, i) => `
+                <div class="cat-card" style="animation-delay:${i * 0.07}s">
+                    <span class="product-badge">${c.products ? c.products.length : 0} Items</span>
+                    <h3>${escapeHtml(c.name)}</h3>
+                    <p>${escapeHtml(c.description || 'No description added.')}</p>
+                    <div class="products-list-container">
+                        <h4>Inventory in this category</h4>
+                        ${c.products && c.products.length > 0
+                            ? c.products.map(p => `
+                                <div class="mini-product-item">
+                                    <i></i>${escapeHtml(p.name)}
+                                    <span class="mini-product-price">₹${p.price != null ? p.price.toFixed(2) : 'N/A'}</span>
+                                </div>`).join('')
+                            : '<p class="no-products-text">No products linked yet.</p>'}
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-sm edit-btn" data-id="${c.id}" onclick="prepareEdit(this)">✏ Edit</button>
+                        <button class="btn-sm delete-btn" onclick="deleteCategory(${c.id})">🗑 Delete</button>
+                    </div>
+                </div>`).join('');
+
+        } catch (err) {
+            console.error("Load error:", err);
+            list.innerHTML = `<div class="state-msg" style="color:#e53935;">
+                <span class="state-icon" style="opacity:1;">⚠️</span>
+                Failed to load categories. Is the Spring Boot server running on port 8080?
+            </div>`;
+        }
+    }
+
+    async function handleFormSubmit() {
+        const name        = document.getElementById("name").value.trim();
+        const description = document.getElementById("description").value.trim();
+
+        if (!name) { alert("Please enter a category name."); return; }
+
+        const method = editId ? "PUT" : "POST";
+        const url    = editId ? `${API_URL}/${editId}` : API_URL;
+
+        try {
+            const res = await fetch(url, {
+                method,
+                // ✅ FIXED: Content-Type must be set as a plain object, not Headers()
+                // Using new Headers() can sometimes drop headers in older browsers
+                headers: {
+                    "Content-Type": "application/json",
+                    "Accept":       "application/json"
+                },
+                body: JSON.stringify({ name, description })
+            });
+
+            if (!res.ok) {
+                const errText = await res.text();
+                throw new Error(`Server error: ${res.status} - ${errText}`);
+            }
+
+            resetForm();
+            loadCategories();
+
+        } catch (err) {
+            console.error("Save error:", err);
+            alert("Failed to save: " + err.message);
+        }
+    }
+
+    function prepareEdit(btn) {
+        const id = Number(btn.getAttribute("data-id"));
+        const category = window._categoryMap[id];
+        if (!category) { alert("Category data not found."); return; }
+        document.getElementById("name").value        = category.name        || "";
+        document.getElementById("description").value = category.description || "";
+        document.getElementById("btnText").innerText = "Update Category";
+        editId = id;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function resetForm() {
+        document.getElementById("name").value        = "";
+        document.getElementById("description").value = "";
+        document.getElementById("btnText").innerText = "Save Category";
+        editId = null;
+    }
+
+    async function deleteCategory(id) {
+        if (!confirm("Remove this category and all its products?")) return;
+        try {
+            const res = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
+            if (!res.ok) throw new Error(`Server error: ${res.status}`);
+            loadCategories();
+        } catch (err) {
+            console.error("Delete error:", err);
+            alert("Failed to delete: " + err.message);
+        }
+    }
+
+    function escapeHtml(str) {
+        return String(str)
+            .replace(/&/g, "&amp;")
+            .replace(/</g,  "&lt;")
+            .replace(/>/g,  "&gt;")
+            .replace(/"/g,  "&quot;")
+            .replace(/'/g,  "&#39;")
+            .replace(/`/g,  "&#96;");
+    }
+
+    /* ── NAVIGATION ── */
+    function goAdd()         { window.location.href = "add-product.html"; }
+    function goView()        { window.location.href = "home1.html"; }
+    function goProductList() { window.location.href = "product-list.html"; }
+    function goCategory()    { window.location.href = "category-management.html"; }
+    function goOrders()      { window.location.href = "order.html"; }
+    function goCustomers()   { window.location.href = "admin-orders.html"; }
+    function goPayments()    { window.location.href = "payment-management.html"; }
+    function logout()        { window.location.href = "admin.html"; }
+    function goDashboard()   { window.location.href = "dashboard.html"; }
+    function closePage()     { window.close(); }
+
+    loadCategories();
+</script>
+</body>
+</html>
